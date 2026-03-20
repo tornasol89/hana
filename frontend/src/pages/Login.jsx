@@ -7,7 +7,7 @@ function Login() {
       {/* NAVBAR */}
       <nav style={{
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        padding: '16px 48px', backgroundColor: '#000000', borderBottom: '3px solid #d4537e',
+        padding: '14px 20px', backgroundColor: '#000000', borderBottom: '3px solid #d4537e',
       }}>
         <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{
@@ -26,12 +26,12 @@ function Login() {
       {/* CONTENIDO */}
       <div style={{
         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        padding: '48px 24px',
+        padding: '24px 16px',
         background: 'radial-gradient(ellipse at 30% 50%, rgba(212,83,126,0.2) 0%, transparent 60%), #1a0a10',
       }}>
         <div style={{
           background: '#2d0a1e', border: '1px solid #d4537e',
-          borderRadius: '20px', padding: '48px 40px', width: '100%', maxWidth: '420px',
+          borderRadius: '20px', padding: '32px 24px', width: '100%', maxWidth: '420px',
         }}>
 
           {/* TÍTULO */}
