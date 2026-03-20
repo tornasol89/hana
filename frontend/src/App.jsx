@@ -1,13 +1,19 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import RegisterClient from './pages/RegisterClient'
+import RegisterWorker from './pages/RegisterWorker'
+
 function App() {
   return (
-    <div className="min-h-screen bg-emerald-950 flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-5xl font-bold text-white mb-4">Hana</h1>
-        <p className="text-emerald-300 text-xl">
-          Conectando mujeres, construyendo confianza
-        </p>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register-client" element={<RegisterClient />} />
+        <Route path="/register-worker" element={<RegisterWorker />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
