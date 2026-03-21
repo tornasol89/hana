@@ -1,45 +1,16 @@
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useParams, Link } from 'react-router-dom'
+import axios from 'axios'
 
-const trabajadora = {
-  nombre: 'Carla Pérez',
-  trabajo: 'Estilista profesional',
-  categoria: 'Estética y belleza',
-  region: 'Metropolitana',
-  comuna: 'Providencia, Santiago',
-  descripcion: 'Especialista en colorimetría, corte y peinados para eventos. 8 años de experiencia en salones premium. Trabajo con productos de primera calidad y me adapto a todo tipo de cabello.',
-  estrellas: 4.9,
-  totalReseñas: 84,
-  servicios: 98,
-  mesesActiva: 14,
-  tasaRespuesta: 97,
-  verificada: true,
-  disponible: true,
-  color: '#d4537e',
-  iniciales: 'CP',
-  metricas: {
-    puntualidad: 97,
-    confiabilidad: 98,
-    calidad: 95,
-    comunicacion: 99,
-    precio: 92,
-  },
-  reseñas: [
-    { nombre: 'Ana González', estrellas: 5, comentario: 'Llegó puntual, excelente trabajo con el color. Muy profesional y amable. La recomiendo completamente.', fecha: 'Hace 2 días' },
-    { nombre: 'María Fuentes', estrellas: 5, comentario: 'Segunda vez que la contrato. Siempre cumple con lo prometido y el resultado es mejor de lo esperado.', fecha: 'Hace 1 semana' },
-    { nombre: 'Valentina Díaz', estrellas: 4, comentario: 'Muy buen trabajo, se demoró un poco más de lo estimado pero el resultado fue impecable.', fecha: 'Hace 2 semanas' },
-  ],
-  certificados: [
-    { nombre: 'Colorimetría avanzada', institucion: 'Instituto SENCE' },
-    { nombre: 'Técnicas de corte moderno', institucion: 'Academia L\'Oréal' },
-  ],
-}
-
-function calcularIndice(t) {
-  const porVerificacion = t.verificada ? 30 : 0
-  const porEvaluaciones = (t.estrellas / 5) * 20
-  const porServicios = Math.min(t.servicios / 50, 1) * 20
-  const porRespuesta = (t.tasaRespuesta / 100) * 15
-  const porAntiguedad = Math.min(t.mesesActiva / 12, 1) * 15
+function calcularIndice(perfil) {
+  const porVerificacion = perfil.usuario?.verificada ? 30 : 0
+  const porEvaluaciones = (perfil.estrellas / 5) * 20
+  const porServicios = Math.min(perfil.serviciosCompletados / 50, 1) * 20
+  const porRespuesta = (perfil.tasaRespuesta / 100) * 15
+  const mesesActiva = perfil.createdAt
+    ? Math.floor((Date.now() - new Date(perfil.createdAt)) / (1000 * 60 * 60 * 24 * 30))
+    : 0
+  const porAntiguedad = Math.min(mesesActiva / 12, 1) * 15
   return Math.round(porVerificacion + porEvaluaciones + porServicios + porRespuesta + porAntiguedad)
 }
 
@@ -71,10 +42,54 @@ function BarraMetrica({ label, valor }) {
 }
 
 function WorkerProfile() {
-  const indice = calcularIndice(trabajadora)
+  const { id } = useParams()
+  const [perfil, setPerfil] = useState(null)
+  const [reviews, setReviews] = useState([])
+  const [promedio, setPromedio] = useState(0)
+  const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState(null)
 
+  useEffect(() => {
+    const cargarDatos = async () => {
+      try {
+        setCargando(true)
+
+        // Cargar perfil de trabajadora
+        const { data: perfilData } = await axios.get(`http://localhost:5000/api/workers/${id}`)
+        setPerfil(perfilData)
+
+        // Cargar reviews usando el ID del usuario
+        const { data: reviewsData } = await axios.get(`http://localhost:5000/api/reviews/${perfilData.usuario._id}`)
+        setReviews(reviewsData.reviews)
+        setPromedio(reviewsData.promedio)
+
+      } catch (err) {
+        setError('No se pudo cargar el perfil')
+      } finally {
+        setCargando(false)
+      }
+    }
+
+    cargarDatos()
+  }, [id])
+
+  if (cargando) return (
+    <div style={{ backgroundColor: '#1a0a10', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <p style={{ color: '#e8b86d', fontSize: '18px' }}>Cargando perfil...</p>
+    </div>
+  )
+
+  if (error || !perfil) return (
+    <div style={{ backgroundColor: '#1a0a10', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px' }}>
+      <p style={{ color: '#d4537e', fontSize: '18px' }}>{error || 'Perfil no encontrado'}</p>
+      <Link to="/" style={{ color: '#e8b86d' }}>← Volver al inicio</Link>
+    </div>
+  )
+
+  const indice = calcularIndice(perfil)
   const colorIndice = indice >= 85 ? '#d4537e' : indice >= 70 ? '#e8b86d' : '#5DCAA5'
   const labelIndice = indice >= 85 ? 'Confianza excepcional' : indice >= 70 ? 'Muy confiable' : 'Confiable'
+  const nombreCompleto = `${perfil.usuario?.nombre} ${perfil.usuario?.apellido}`
 
   return (
     <div style={{ backgroundColor: '#1a0a10', minHeight: '100vh', color: 'white', fontFamily: 'sans-serif' }}>
@@ -93,106 +108,75 @@ function WorkerProfile() {
           }}>H</div>
           <span style={{ fontSize: '22px', fontWeight: '800', color: '#e8b86d', letterSpacing: '4px' }}>HANA</span>
         </Link>
-        <Link to="/" style={{ color: '#cccccc', fontSize: '14px', textDecoration: 'none' }}>← Volver a búsqueda</Link>
+        <Link to="/" style={{ color: '#cccccc', fontSize: '14px', textDecoration: 'none' }}>← Volver</Link>
       </nav>
 
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 24px' }}>
+      <div style={{ maxWidth: '860px', margin: '0 auto', padding: '32px 20px' }}>
 
-       {/* FOTO HERO */}
-        <div style={{
-          width: '100%', height: '420px', borderRadius: '16px',
-          overflow: 'hidden', marginBottom: '0',
-          position: 'relative',
-        }}>
-          <img
-            src="https://images.pexels.com/photos/3768911/pexels-photo-3768911.jpeg?auto=compress&cs=tinysrgb&w=900"
-            alt="Carla Pérez"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%' }}
-          />
-          <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(to bottom, transparent 40%, rgba(26,10,16,0.95) 100%)',
-          }} />
-          <div style={{
-            position: 'absolute', bottom: '20px', left: '28px',
-            display: 'flex', alignItems: 'center', gap: '12px',
+        {/* BADGE DISPONIBLE */}
+        <div style={{ marginBottom: '12px' }}>
+          <span style={{
+            display: 'inline-block', padding: '4px 14px', borderRadius: '50px', fontSize: '12px', fontWeight: '600',
+            background: perfil.disponible ? 'rgba(93,202,165,0.15)' : 'rgba(255,255,255,0.07)',
+            color: perfil.disponible ? '#5DCAA5' : '#888',
+            border: `1px solid ${perfil.disponible ? '#5DCAA5' : '#555'}`,
           }}>
-            {trabajadora.verificada && (
-              <span style={{ background: 'rgba(93,202,165,0.9)', color: '#04342C', fontSize: '12px', padding: '4px 12px', borderRadius: '50px', fontWeight: '700' }}>
-                ✓ Identidad verificada
-              </span>
-            )}
-            <span style={{
-              background: trabajadora.disponible ? 'rgba(93,202,165,0.9)' : 'rgba(136,135,128,0.9)',
-              color: trabajadora.disponible ? '#04342C' : '#ffffff',
-              fontSize: '12px', padding: '4px 12px', borderRadius: '50px', fontWeight: '700',
-            }}>
-              {trabajadora.disponible ? '● Disponible ahora' : '● No disponible'}
-            </span>
-          </div>
+            {perfil.disponible ? '● Disponible ahora' : '● No disponible'}
+          </span>
         </div>
 
         {/* HEADER PERFIL */}
         <div style={{
           background: '#2d0a1e', border: '1px solid #d4537e',
-          borderRadius: '0 0 16px 16px', padding: '24px 32px 32px',
+          borderRadius: '16px', padding: '24px 32px 32px',
           marginBottom: '24px',
           display: 'flex', gap: '24px', alignItems: 'flex-start', flexWrap: 'wrap',
         }}>
           <div style={{ flex: 1 }}>
-            <h1 style={{ fontSize: '26px', fontWeight: '800', color: '#ffffff', margin: '0 0 4px' }}>{trabajadora.nombre}</h1>
-            <p style={{ fontSize: '15px', color: '#e8b86d', margin: '0 0 4px', fontWeight: '600' }}>{trabajadora.trabajo}</p>
-            <p style={{ fontSize: '13px', color: '#cccccc', margin: '0 0 10px' }}>📍 {trabajadora.comuna} · {trabajadora.categoria}</p>
+            <h1 style={{ fontSize: '26px', fontWeight: '800', color: '#ffffff', margin: '0 0 4px' }}>{nombreCompleto}</h1>
+            <p style={{ fontSize: '15px', color: '#e8b86d', margin: '0 0 4px', fontWeight: '600' }}>{perfil.categoria}</p>
+            <p style={{ fontSize: '13px', color: '#cccccc', margin: '0 0 10px' }}>
+              📍 {perfil.usuario?.comuna}, {perfil.usuario?.region}
+            </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-              <Estrellas cantidad={trabajadora.estrellas} />
-              <span style={{ fontSize: '15px', fontWeight: '700', color: '#e8b86d' }}>{trabajadora.estrellas}</span>
-              <span style={{ fontSize: '13px', color: '#cccccc' }}>({trabajadora.totalReseñas} reseñas)</span>
+              <Estrellas cantidad={Number(promedio)} />
+              <span style={{ fontSize: '15px', fontWeight: '700', color: '#e8b86d' }}>{promedio}</span>
+              <span style={{ fontSize: '13px', color: '#cccccc' }}>({reviews.length} reseñas)</span>
             </div>
-            <p style={{ fontSize: '14px', color: '#dddddd', lineHeight: '1.7', margin: 0 }}>{trabajadora.descripcion}</p>
+            <p style={{ fontSize: '14px', color: '#dddddd', lineHeight: '1.7', margin: 0 }}>{perfil.descripcion}</p>
           </div>
 
           {/* ÍNDICE DE CONFIANZA */}
           <div style={{
             background: '#1a0a10', border: `2px solid ${colorIndice}`,
-            borderRadius: '16px', padding: '20px', textAlign: 'center',
-            minWidth: '140px', flexShrink: 0,
+            borderRadius: '16px', padding: '20px', textAlign: 'center', minWidth: '140px', flexShrink: 0,
           }}>
-            <div style={{ fontSize: '11px', color: '#cccccc', marginBottom: '8px', letterSpacing: '1px', textTransform: 'uppercase' }}>
-              Índice Hana
-            </div>
-            <div style={{ fontSize: '52px', fontWeight: '900', color: colorIndice, lineHeight: 1 }}>
-              {indice}
-            </div>
-            <div style={{ fontSize: '11px', color: colorIndice, marginTop: '6px', fontWeight: '600' }}>
-              {labelIndice}
-            </div>
+            <div style={{ fontSize: '11px', color: '#cccccc', marginBottom: '8px', letterSpacing: '1px', textTransform: 'uppercase' }}>Índice Hana</div>
+            <div style={{ fontSize: '52px', fontWeight: '900', color: colorIndice, lineHeight: 1 }}>{indice}</div>
+            <div style={{ fontSize: '11px', color: colorIndice, marginTop: '6px', fontWeight: '600' }}>{labelIndice}</div>
             <div style={{ marginTop: '12px', fontSize: '10px', color: 'rgba(255,255,255,0.4)', lineHeight: '1.6' }}>
               Verificación · Evaluaciones<br />Servicios · Respuesta · Antigüedad
             </div>
           </div>
         </div>
-          
 
         {/* MÉTRICAS + ESTADÍSTICAS */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
-
-          {/* MÉTRICAS */}
           <div style={{ background: '#2d0a1e', border: '1px solid rgba(212,83,126,0.3)', borderRadius: '14px', padding: '24px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#ffffff', margin: '0 0 20px' }}>Valoraciones detalladas</h3>
-            <BarraMetrica label="Puntualidad" valor={trabajadora.metricas.puntualidad} />
-            <BarraMetrica label="Confiabilidad" valor={trabajadora.metricas.confiabilidad} />
-            <BarraMetrica label="Calidad del trabajo" valor={trabajadora.metricas.calidad} />
-            <BarraMetrica label="Comunicación" valor={trabajadora.metricas.comunicacion} />
-            <BarraMetrica label="Precio justo" valor={trabajadora.metricas.precio} />
+            <BarraMetrica label="Puntualidad" valor={perfil.metricas?.puntualidad || 0} />
+            <BarraMetrica label="Confiabilidad" valor={perfil.metricas?.confiabilidad || 0} />
+            <BarraMetrica label="Calidad del trabajo" valor={perfil.metricas?.calidad || 0} />
+            <BarraMetrica label="Comunicación" valor={perfil.metricas?.comunicacion || 0} />
+            <BarraMetrica label="Precio justo" valor={perfil.metricas?.precio || 0} />
           </div>
 
-          {/* ESTADÍSTICAS */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {[
-              { num: trabajadora.servicios, label: 'Servicios completados' },
-              { num: `${trabajadora.tasaRespuesta}%`, label: 'Tasa de respuesta' },
-              { num: `${trabajadora.mesesActiva} meses`, label: 'En la plataforma' },
-              { num: trabajadora.totalReseñas, label: 'Reseñas recibidas' },
+              { num: perfil.serviciosCompletados, label: 'Servicios completados' },
+              { num: `${perfil.tasaRespuesta}%`, label: 'Tasa de respuesta' },
+              { num: perfil.tarifaHora ? `$${perfil.tarifaHora}/hr` : 'A convenir', label: 'Tarifa' },
+              { num: reviews.length, label: 'Reseñas recibidas' },
             ].map((s) => (
               <div key={s.label} style={{
                 background: '#2d0a1e', border: '1px solid rgba(212,83,126,0.3)',
@@ -207,11 +191,11 @@ function WorkerProfile() {
         </div>
 
         {/* CERTIFICADOS */}
-        {trabajadora.certificados.length > 0 && (
+        {perfil.certificados?.length > 0 && (
           <div style={{ background: '#2d0a1e', border: '1px solid rgba(212,83,126,0.3)', borderRadius: '14px', padding: '24px', marginBottom: '24px' }}>
             <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#ffffff', margin: '0 0 16px' }}>Certificados y capacitaciones</h3>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              {trabajadora.certificados.map((cert) => (
+              {perfil.certificados.map((cert) => (
                 <div key={cert.nombre} style={{
                   background: 'rgba(232,184,109,0.1)', border: '1px solid #e8b86d',
                   borderRadius: '10px', padding: '12px 16px',
@@ -227,23 +211,24 @@ function WorkerProfile() {
         {/* RESEÑAS */}
         <div style={{ background: '#2d0a1e', border: '1px solid rgba(212,83,126,0.3)', borderRadius: '14px', padding: '24px', marginBottom: '24px' }}>
           <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#ffffff', margin: '0 0 16px' }}>Reseñas de clientas</h3>
-          {trabajadora.reseñas.map((r) => (
-            <div key={r.nombre} style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: '16px', marginTop: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#d4537e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700' }}>
-                    {r.nombre.charAt(0)}
+          {reviews.length === 0 ? (
+            <p style={{ color: '#888', fontSize: '14px' }}>Aún no hay reseñas para esta trabajadora.</p>
+          ) : (
+            reviews.map((r) => (
+              <div key={r._id} style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: '16px', marginTop: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#d4537e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700' }}>
+                      {r.autor?.nombre?.charAt(0)}
+                    </div>
+                    <span style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>{r.autor?.nombre} {r.autor?.apellido}</span>
                   </div>
-                  <span style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>{r.nombre}</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Estrellas cantidad={r.estrellas} />
-                  <span style={{ fontSize: '12px', color: '#888780' }}>{r.fecha}</span>
                 </div>
+                <p style={{ fontSize: '13px', color: '#dddddd', lineHeight: '1.6', margin: 0 }}>{r.comentario}</p>
               </div>
-              <p style={{ fontSize: '13px', color: '#dddddd', lineHeight: '1.6', margin: 0 }}>{r.comentario}</p>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         {/* BOTÓN CONTACTAR */}
@@ -261,7 +246,7 @@ function WorkerProfile() {
             borderRadius: '50px', textDecoration: 'none',
             fontSize: '16px', fontWeight: '600',
           }}>
-            ← Volver
+            ← Volver al inicio
           </Link>
         </div>
 
