@@ -2,7 +2,6 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import { connectDB } from './config/db.js'
-
 import authRoutes from './routes/auth.js'
 import workerRoutes from './routes/workers.js'
 import bookingRoutes from './routes/bookings.js'
@@ -22,7 +21,7 @@ app.use('/api/reviews', reviewRoutes)
 
 app.get('/', (req, res) => {
   res.json({ mensaje: 'API de Hana funcionando ✅' })
-})
+}) // ← este } faltaba
 
 const PORT = process.env.PORT || 5000
 
