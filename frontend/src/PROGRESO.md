@@ -33,6 +33,8 @@ C:\Users\LENOVO\Desktop\hana
 - [x] RegisterWorker.jsx — registro profesional con selector de categoría
 - [x] Diseño responsivo para móvil en todas las páginas
 - [x] Paleta de colores: fondo #1a0a10, rosa #d4537e, dorado #e8b86d
+- [x] Estructura del backend creada (carpetas models, routes, middleware, config)
+- [x] Dependencias del backend instaladas (express, mongoose, jwt, bcrypt, cloudinary, nodemailer)
 
 ---
 
@@ -42,27 +44,35 @@ C:\Users\LENOVO\Desktop\hana
 
 ### SEMANA 2 — Backend
 
-- Crear el backend con Node.js + Express
-- Conectar MongoDB Atlas
-- Modelo de datos: User, WorkerProfile
+- Conectar MongoDB Atlas (.env con MONGO_URI)
+- Modelos: User (foto + RUT + carnet), WorkerProfile, Booking, Review, Alert
 - Registro e inicio de sesión con JWT
-- Formulario de perfil de trabajadora
-- Subida de fotos con Cloudinary
+- Subida de foto de perfil y carnet con Cloudinary
+- Verificación de identidad por carnet (aprobación manual desde panel admin)
 
-### SEMANA 3 — Búsqueda y valoraciones
+### SEMANA 3 — Reservas y perfiles
 
-- Buscador por región y tipo de servicio
-- Lista de trabajadoras con cards
-- Sistema de estrellas (1 a 5)
-- Dejar comentario y reseña
-- Botón de contacto (email/WhatsApp)
+- Perfil de trabajadora con foto, métricas de desempeño y reseñas
+- Perfil de clienta con foto y badge de confiabilidad
+- Calendario de disponibilidad de la trabajadora
+- Sistema de reservas con aceptar/rechazar
+- Notificaciones por email (Nodemailer)
 
-### SEMANA 4 — Pulido y deploy
+### SEMANA 4 — Evaluaciones, búsqueda e impacto
 
-- Panel de administración
-- Diseño responsivo móvil
+- Evaluación bidireccional (clienta → trabajadora y trabajadora → clienta)
+- Métricas automáticas: puntualidad, confiabilidad, calidad, comunicación, precio
+- Sistema de alertas comunitarias sobre clientas
+- Buscador por categoría y comuna
+- Página "Nuestro impacto" con dashboard de cifras de Chile
+- Sección de capacitaciones (SENCE, ChileValora, MINVU)
+- 16 categorías: 8 tradicionales + 8 de empoderamiento (gasfitería, electricidad, mecánica, etc.)
+
+### SEMANA 5 — Deploy y pulido
+
 - Deploy frontend en Vercel
 - Deploy backend en Render
+- Panel de administración para verificar carnets
 - README con instrucciones
 
 ---
@@ -72,10 +82,9 @@ C:\Users\LENOVO\Desktop\hana
 1. Abrir VSCode
 2. Archivo → Abrir carpeta → Escritorio → hana
 3. Abrir terminal (Ctrl + Ñ)
-4. Escribir: `cd frontend`
-5. Escribir: `npm run dev`
-6. Abrir navegador en: http://localhost:5173/
-7. Decirle a Claude: "Estoy construyendo el proyecto Hana, llegué hasta [indicar el último paso completado] y necesito continuar"
+4. Abrir terminal nueva con + y escribir: `cd frontend` → `npm run dev`
+5. Abrir navegador en: http://localhost:5173/
+6. Subir este archivo PROGRESO.md a Claude y decir: "Estoy construyendo el proyecto Hana, necesito continuar desde donde lo dejé"
 
 ---
 
@@ -84,6 +93,7 @@ C:\Users\LENOVO\Desktop\hana
 | Qué hace                  | Comando                                                  |
 | ------------------------- | -------------------------------------------------------- |
 | Iniciar el frontend       | `npm run dev` (dentro de /frontend)                      |
+| Iniciar el backend        | `npm run dev` (dentro de /backend)                       |
 | Detener el servidor       | Ctrl + C                                                 |
 | Guardar cambios en GitHub | `git add .` → `git commit -m "descripción"` → `git push` |
 | Instalar un paquete nuevo | `npm install nombre-paquete`                             |
@@ -105,7 +115,8 @@ C:\Users\LENOVO\Desktop\hana
 | MongoDB Atlas     | Base de datos en la nube (gratis)            |
 | Mongoose          | Conectar Node.js con MongoDB                 |
 | JWT               | Sistema de login seguro                      |
-| Cloudinary        | Guardar fotos e imágenes                     |
+| Cloudinary        | Guardar fotos e imágenes y carnets           |
+| Nodemailer        | Enviar emails de notificación                |
 | Vercel            | Deploy del frontend (gratis)                 |
 | Render            | Deploy del backend (gratis)                  |
 
@@ -125,6 +136,7 @@ hana/
 │       │   ├── WorkerList.jsx
 │       │   ├── WorkerProfile.jsx
 │       │   ├── WorkerDashboard.jsx
+│       │   ├── ImpactPage.jsx
 │       │   └── AdminPanel.jsx
 │       ├── components/
 │       │   ├── Navbar.jsx
@@ -140,10 +152,17 @@ hana/
         ├── models/
         │   ├── User.js
         │   ├── WorkerProfile.js
-        │   └── Review.js
+        │   ├── Booking.js
+        │   ├── Review.js
+        │   └── Alert.js
         ├── routes/
         │   ├── auth.js
         │   ├── workers.js
+        │   ├── bookings.js
         │   └── reviews.js
+        ├── middleware/
+        │   └── auth.js
+        ├── config/
+        │   └── db.js
         └── server.js
 ```
