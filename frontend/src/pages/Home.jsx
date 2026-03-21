@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const slides = [
   {
@@ -48,11 +49,7 @@ const categorias = [
   { icono: '🌿', nombre: 'Jardinería' },
 ]
 
-const trabajadoras = [
-  { iniciales: 'CP', nombre: 'Carla Pérez', trabajo: 'Estilista · Santiago', estrellas: 5, desc: 'Especialista en colorimetría y corte. 8 años de experiencia en salones premium.', tag: 'Disponible hoy', color: '#d4537e' },
-  { iniciales: 'MR', nombre: 'María Rojas', trabajo: 'Profesora · Las Condes', estrellas: 5, desc: 'Clases de matemáticas y física para enseñanza media y universitaria.', tag: '5 reseñas este mes', color: '#c4892a' },
-  { iniciales: 'VL', nombre: 'Valentina Lagos', trabajo: 'Chef · Providencia', estrellas: 4, desc: 'Cocina chilena fusión para eventos, cumpleaños y cenas privadas.', tag: 'Top del mes', color: '#7a3aa8' },
-]
+
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
@@ -87,7 +84,15 @@ function Home() {
   const isMobile = useIsMobile()
   const [slideActual, setSlideActual] = useCarrusel(slides.length)
 
-  const usuarioGuardado = localStorage.getItem('usuario')
+  const [trabajadoras, setTrabajadoras] = useState([])
+
+useEffect(() => {
+  axios.get('http://localhost:5000/api/workers')
+    .then(res => setTrabajadoras(res.data))
+    .catch(err => console.error(err))
+}, [])
+
+const usuarioGuardado = localStorage.getItem('usuario')
   const usuario = usuarioGuardado ? JSON.parse(usuarioGuardado) : null
 
   const cerrarSesion = () => {
@@ -218,22 +223,42 @@ function Home() {
         <h2 style={{ fontSize: isMobile ? '24px' : '30px', fontWeight: '800', textAlign: 'center', marginBottom: '8px', color: '#ffffff' }}>Profesionales destacadas</h2>
         <p style={{ textAlign: 'center', color: '#cccccc', fontSize: '14px', marginBottom: '36px' }}>Valoradas por la comunidad Hana</p>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '16px', maxWidth: '900px', margin: '0 auto' }}>
-          {trabajadoras.map((w) => (
-            <Link key={w.nombre} to="/worker/1" style={{ textDecoration: 'none' }}>
-              <div style={{ background: '#1a0a10', border: '1px solid #d4537e', borderRadius: '14px', padding: '20px', cursor: 'pointer' }}>
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
-                  <div style={{ width: '44px', height: '44px', borderRadius: '50%', backgroundColor: w.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '14px', color: 'white', flexShrink: 0 }}>{w.iniciales}</div>
-                  <div>
-                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>{w.nombre}</div>
-                    <div style={{ fontSize: '11px', color: '#cccccc', marginTop: '2px' }}>{w.trabajo}</div>
-                  </div>
-                </div>
-                <Estrellas cantidad={w.estrellas} />
-                <div style={{ fontSize: '12px', color: '#dddddd', lineHeight: '1.6' }}>{w.desc}</div>
-                <span style={{ display: 'inline-block', background: 'rgba(212,83,126,0.25)', color: '#ffb8d1', fontSize: '11px', padding: '3px 10px', borderRadius: '50px', marginTop: '10px', border: '1px solid #d4537e' }}>{w.tag}</span>
-              </div>
-            </Link>
-          ))}
+          {trabajadoras.length === 0 ? (
+  <p style={{ textAlign: 'center', color: '#888', gridColumn: '1/-1' }}>
+    Aún no hay trabajadoras registradas.
+  </p>
+) : (
+  trabajadoras.map((w) => {
+    const nombre = `${w.usuario?.nombre} ${w.usuario?.apellido}`
+    const iniciales = `${w.usuario?.nombre?.charAt(0)}${w.usuario?.apellido?.charAt(0)}`
+    const region = w.usuario?.region || ''
+    const colores = ['#d4537e', '#c4892a', '#7a3aa8', '#5DCAA5']
+    const color = colores[Math.floor(Math.random() * colores.length)]
+
+    return (
+      <Link key={w._id} to={`/worker/${w._id}`} style={{ textDecoration: 'none' }}>
+        <div style={{ background: '#1a0a10', border: '1px solid #d4537e', borderRadius: '14px', padding: '20px', cursor: 'pointer' }}>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
+            <div style={{ width: '44px', height: '44px', borderRadius: '50%', backgroundColor: color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '14px', color: 'white', flexShrink: 0 }}>
+              {iniciales}
+            </div>
+            <div>
+              <div style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>{nombre}</div>
+              <div style={{ fontSize: '11px', color: '#cccccc', marginTop: '2px' }}>{w.categoria} · {region}</div>
+            </div>
+          </div>
+          <div style={{ color: '#e8b86d', fontSize: '13px', marginBottom: '8px' }}>★★★★★</div>
+          <div style={{ fontSize: '12px', color: '#dddddd', lineHeight: '1.6' }}>
+            {w.descripcion || 'Profesional verificada en Hana.'}
+          </div>
+          <span style={{ display: 'inline-block', background: 'rgba(212,83,126,0.25)', color: '#ffb8d1', fontSize: '11px', padding: '3px 10px', borderRadius: '50px', marginTop: '10px', border: '1px solid #d4537e' }}>
+            {w.disponible ? '● Disponible' : '● No disponible'}
+          </span>
+        </div>
+      </Link>
+    )
+  })
+)}
         </div>
       </section>
 

@@ -53,9 +53,22 @@ function RegisterWorker() {
         region: form.region,
         comuna: form.comuna,
       })
-      localStorage.setItem('token', res.data.token)
-      localStorage.setItem('usuario', JSON.stringify(res.data.usuario))
-      navigate('/')
+      const token = res.data.token
+localStorage.setItem('token', token)
+localStorage.setItem('usuario', JSON.stringify(res.data.usuario))
+
+// Crear perfil de trabajadora automáticamente
+await axios.post(
+  'http://localhost:5000/api/workers',
+  {
+    categoria: form.categoria,
+    descripcion: '',
+    tarifaHora: 0
+  },
+  { headers: { Authorization: `Bearer ${token}` } }
+)
+
+navigate('/')
     } catch (err) {
       setError(err.response?.data?.mensaje || 'Error al registrarse')
     } finally {
