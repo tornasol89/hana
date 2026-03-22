@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import Navbar from '../components/Navbar'
 
 const slides = [
   {
@@ -49,8 +50,6 @@ const categorias = [
   { icono: '🌿', nombre: 'Jardinería' },
 ]
 
-
-
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   useEffect(() => {
@@ -72,79 +71,45 @@ function useCarrusel(total, intervalo = 4000) {
   return [actual, setActual]
 }
 
-function Estrellas({ cantidad }) {
-  return (
-    <div style={{ color: '#e8b86d', fontSize: '13px', marginBottom: '8px' }}>
-      {'★'.repeat(cantidad)}{'☆'.repeat(5 - cantidad)}
-    </div>
-  )
-}
-
 function Home() {
   const isMobile = useIsMobile()
   const [slideActual, setSlideActual] = useCarrusel(slides.length)
-
   const [trabajadoras, setTrabajadoras] = useState([])
 
-useEffect(() => {
-  axios.get('http://localhost:5000/api/workers')
-    .then(res => setTrabajadoras(res.data))
-    .catch(err => console.error(err))
-}, [])
-
-const usuarioGuardado = localStorage.getItem('usuario')
-  const usuario = usuarioGuardado ? JSON.parse(usuarioGuardado) : null
-
-  const cerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('usuario')
-    window.location.reload()
-  }
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/workers')
+      .then(res => setTrabajadoras(res.data))
+      .catch(err => console.error(err))
+  }, [])
 
   return (
     <div style={{ backgroundColor: '#1a0a10', minHeight: '100vh', color: 'white', fontFamily: 'sans-serif' }}>
 
-      {/* NAVBAR */}
-      <nav style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        padding: isMobile ? '14px 20px' : '16px 48px',
-        backgroundColor: '#000000', borderBottom: '3px solid #d4537e',
+      <Navbar />
+
+      {/* BANNER COMPROMISO HANA */}
+      <div style={{
+        backgroundColor: '#2d0a1e',
+        borderBottom: '1px solid rgba(212,83,126,0.4)',
+        padding: '10px 48px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '12px',
+        flexWrap: 'wrap',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            width: '36px', height: '36px', borderRadius: '50%',
-            background: 'linear-gradient(135deg, #d4537e, #e8b86d)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: '900', fontSize: '16px', color: 'white',
-          }}>H</div>
-          <span style={{ fontSize: isMobile ? '18px' : '22px', fontWeight: '800', color: '#e8b86d', letterSpacing: '4px' }}>HANA</span>
-        </div>
-        {!isMobile && (
-          <div style={{ display: 'flex', gap: '28px', alignItems: 'center' }}>
-            <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Servicios</span>
-            <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Profesionales</span>
-            <span style={{ color: '#ffffff', fontSize: '14px', fontWeight: '500', cursor: 'pointer' }}>Cómo funciona</span>
-            {usuario ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <span style={{ color: '#e8b86d', fontSize: '14px', fontWeight: '600' }}>Hola, {usuario.nombre} 👋</span>
-                <button onClick={cerrarSesion} style={{ backgroundColor: 'transparent', color: '#cccccc', border: '1px solid #cccccc', padding: '7px 16px', borderRadius: '50px', fontSize: '13px', cursor: 'pointer' }}>Salir</button>
-              </div>
-            ) : (
-              <Link to="/login" style={{ backgroundColor: '#d4537e', color: 'white', padding: '9px 22px', borderRadius: '50px', textDecoration: 'none', fontSize: '14px', fontWeight: '600' }}>Ingresar</Link>
-            )}
-          </div>
-        )}
-        {isMobile && (
-          usuario ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ color: '#e8b86d', fontSize: '13px', fontWeight: '600' }}>Hola, {usuario.nombre}</span>
-              <button onClick={cerrarSesion} style={{ backgroundColor: 'transparent', color: '#cccccc', border: '1px solid #cccccc', padding: '5px 10px', borderRadius: '50px', fontSize: '12px', cursor: 'pointer' }}>Salir</button>
-            </div>
-          ) : (
-            <Link to="/login" style={{ backgroundColor: '#d4537e', color: 'white', padding: '8px 16px', borderRadius: '50px', textDecoration: 'none', fontSize: '13px', fontWeight: '600' }}>Ingresar</Link>
-          )
-        )}
-      </nav>
+        <span style={{ fontSize: '14px' }}>⚠️</span>
+        <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.75)' }}>
+          Hana requiere verificación de identidad para todas las usuarias. Sin verificación aprobada no puedes contratar ni ofrecer servicios.
+        </span>
+        <Link to="/compromiso" style={{
+          fontSize: '13px', fontWeight: '700', color: '#d4537e',
+          textDecoration: 'none', whiteSpace: 'nowrap',
+          borderBottom: '1px solid #d4537e',
+        }}>
+          Leer Compromiso Hana →
+        </Link>
+      </div>
 
       {/* HERO CON CARRUSEL */}
       <section style={{ position: 'relative', height: isMobile ? '420px' : '560px', overflow: 'hidden' }}>
@@ -172,8 +137,15 @@ const usuarioGuardado = localStorage.getItem('usuario')
             Conectamos mujeres que buscan servicios de confianza con profesionales que los ofrecen.
           </p>
           <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/" style={{ backgroundColor: '#d4537e', color: '#ffffff', padding: isMobile ? '12px 24px' : '14px 32px', borderRadius: '50px', textDecoration: 'none', fontSize: '15px', fontWeight: '600' }}>Buscar servicios</Link>
-            <Link to="/register-worker" style={{ backgroundColor: 'transparent', color: '#e8b86d', border: '2px solid #e8b86d', padding: isMobile ? '12px 24px' : '14px 32px', borderRadius: '50px', textDecoration: 'none', fontSize: '15px', fontWeight: '600' }}>Ofrecer mis servicios</Link>
+            <button
+              onClick={() => document.getElementById('categorias').scrollIntoView({ behavior: 'smooth' })}
+              style={{ backgroundColor: '#d4537e', color: '#ffffff', padding: isMobile ? '12px 24px' : '14px 32px', borderRadius: '50px', border: 'none', fontSize: '15px', fontWeight: '600', cursor: 'pointer' }}
+            >
+              Buscar servicios
+            </button>
+            <Link to="/register-worker" style={{ backgroundColor: 'transparent', color: '#e8b86d', border: '2px solid #e8b86d', padding: isMobile ? '12px 24px' : '14px 32px', borderRadius: '50px', textDecoration: 'none', fontSize: '15px', fontWeight: '600' }}>
+              Ofrecer mis servicios
+            </Link>
           </div>
           <div style={{ display: 'flex', gap: '8px', marginTop: '28px' }}>
             {slides.map((_, i) => (
@@ -184,7 +156,7 @@ const usuarioGuardado = localStorage.getItem('usuario')
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', gap: isMobile ? '24px' : '48px', justifyContent: 'center', padding: '16px 48px', background: 'rgba(26,10,16,0.7)', flexWrap: 'wrap' }}>
           {[
             { num: '2.400+', label: 'Profesionales activas' },
-            { num: '18', label: 'Categorías de servicio' },
+            { num: '16', label: 'Categorías de servicio' },
             { num: '4.9★', label: 'Valoración promedio' },
           ].map((s) => (
             <div key={s.label} style={{ textAlign: 'center' }}>
@@ -204,7 +176,7 @@ const usuarioGuardado = localStorage.getItem('usuario')
       </section>
 
       {/* CATEGORÍAS */}
-      <section style={{ padding: isMobile ? '40px 20px' : '56px 48px', backgroundColor: '#1a0a10' }}>
+      <section id="categorias" style={{ padding: isMobile ? '40px 20px' : '56px 48px', backgroundColor: '#1a0a10' }}>
         <h2 style={{ fontSize: isMobile ? '24px' : '30px', fontWeight: '800', textAlign: 'center', marginBottom: '8px', color: '#ffffff' }}>¿Qué servicio necesitas?</h2>
         <p style={{ textAlign: 'center', color: '#cccccc', fontSize: '14px', marginBottom: '36px' }}>8 categorías tradicionales + 8 de empoderamiento</p>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: '14px', maxWidth: '860px', margin: '0 auto' }}>
@@ -224,49 +196,48 @@ const usuarioGuardado = localStorage.getItem('usuario')
         <p style={{ textAlign: 'center', color: '#cccccc', fontSize: '14px', marginBottom: '36px' }}>Valoradas por la comunidad Hana</p>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '16px', maxWidth: '900px', margin: '0 auto' }}>
           {trabajadoras.length === 0 ? (
-  <p style={{ textAlign: 'center', color: '#888', gridColumn: '1/-1' }}>
-    Aún no hay trabajadoras registradas.
-  </p>
-) : (
-  trabajadoras.map((w) => {
-    const nombre = `${w.usuario?.nombre} ${w.usuario?.apellido}`
-    const iniciales = `${w.usuario?.nombre?.charAt(0)}${w.usuario?.apellido?.charAt(0)}`
-    const region = w.usuario?.region || ''
-    const colores = ['#d4537e', '#c4892a', '#7a3aa8', '#5DCAA5']
-    const color = colores[Math.floor(Math.random() * colores.length)]
-
-    return (
-      <Link key={w._id} to={`/worker/${w._id}`} style={{ textDecoration: 'none' }}>
-        <div style={{ background: '#1a0a10', border: '1px solid #d4537e', borderRadius: '14px', padding: '20px', cursor: 'pointer' }}>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ width: '44px', height: '44px', borderRadius: '50%', backgroundColor: color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '14px', color: 'white', flexShrink: 0 }}>
-              {iniciales}
-            </div>
-            <div>
-              <div style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>{nombre}</div>
-              <div style={{ fontSize: '11px', color: '#cccccc', marginTop: '2px' }}>{w.categoria} · {region}</div>
-            </div>
-          </div>
-          <div style={{ color: '#e8b86d', fontSize: '13px', marginBottom: '8px' }}>★★★★★</div>
-          <div style={{ fontSize: '12px', color: '#dddddd', lineHeight: '1.6' }}>
-            {w.descripcion || 'Profesional verificada en Hana.'}
-          </div>
-          <span style={{ display: 'inline-block', background: 'rgba(212,83,126,0.25)', color: '#ffb8d1', fontSize: '11px', padding: '3px 10px', borderRadius: '50px', marginTop: '10px', border: '1px solid #d4537e' }}>
-            {w.disponible ? '● Disponible' : '● No disponible'}
-          </span>
-        </div>
-      </Link>
-    )
-  })
-)}
+            <p style={{ textAlign: 'center', color: '#888', gridColumn: '1/-1' }}>
+              Aún no hay trabajadoras registradas.
+            </p>
+          ) : (
+            trabajadoras.map((w) => {
+              const nombre = `${w.usuario?.nombre} ${w.usuario?.apellido}`
+              const iniciales = `${w.usuario?.nombre?.charAt(0)}${w.usuario?.apellido?.charAt(0)}`
+              const region = w.usuario?.region || ''
+              const colores = ['#d4537e', '#c4892a', '#7a3aa8', '#5DCAA5']
+              const color = colores[Math.floor(Math.random() * colores.length)]
+              return (
+                <Link key={w._id} to={`/worker/${w._id}`} style={{ textDecoration: 'none' }}>
+                  <div style={{ background: '#1a0a10', border: '1px solid #d4537e', borderRadius: '14px', padding: '20px', cursor: 'pointer' }}>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
+                      <div style={{ width: '44px', height: '44px', borderRadius: '50%', backgroundColor: color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '700', fontSize: '14px', color: 'white', flexShrink: 0 }}>
+                        {iniciales}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '14px', fontWeight: '600', color: '#ffffff' }}>{nombre}</div>
+                        <div style={{ fontSize: '11px', color: '#cccccc', marginTop: '2px' }}>{w.categoria} · {region}</div>
+                      </div>
+                    </div>
+                    <div style={{ color: '#e8b86d', fontSize: '13px', marginBottom: '8px' }}>★★★★★</div>
+                    <div style={{ fontSize: '12px', color: '#dddddd', lineHeight: '1.6' }}>
+                      {w.descripcion || 'Profesional verificada en Hana.'}
+                    </div>
+                    <span style={{ display: 'inline-block', background: 'rgba(212,83,126,0.25)', color: '#ffb8d1', fontSize: '11px', padding: '3px 10px', borderRadius: '50px', marginTop: '10px', border: '1px solid #d4537e' }}>
+                      {w.disponible ? '● Disponible' : '● No disponible'}
+                    </span>
+                  </div>
+                </Link>
+              )
+            })
+          )}
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer style={{ display: 'flex', justifyContent: isMobile ? 'center' : 'space-between', flexDirection: isMobile ? 'column' : 'row', alignItems: 'center', textAlign: isMobile ? 'center' : 'left', padding: isMobile ? '24px 20px' : '28px 48px', backgroundColor: '#000000', borderTop: '2px solid #d4537e', gap: '12px' }}>
-        <span style={{ fontSize: '20px', fontWeight: '800', color: '#e8b86d' }}>HANA</span>
-        <span style={{ fontSize: '12px', color: '#cccccc' }}>Conectando mujeres, construyendo confianza</span>
-        <span style={{ fontSize: '12px', color: '#cccccc' }}>© 2025 Hana</span>
+      <footer style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 48px', backgroundColor: '#000000', borderTop: '3px solid transparent', borderImage: 'linear-gradient(to right, #d4537e, #e8b86d) 1', gap: '20px' }}>
+        <img src="/logoHana2.png" alt="Logo Hana" style={{ height: '200px', width: '200px', objectFit: 'contain' }} />
+        <span style={{ fontSize: '12px', color: '#cccccc', letterSpacing: '1px' }}>Conectando mujeres, construyendo confianza</span>
+        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)' }}>© 2025 Hana</span>
       </footer>
 
     </div>

@@ -13,6 +13,8 @@ const userSchema = new mongoose.Schema({
   disponible: { type: Boolean, default: true },
   region: { type: String, default: '' },
   comuna: { type: String, default: '' },
+  aceptoCompromiso: { type: Boolean, default: false },
+  fechaAceptacion: { type: Date, default: null },
 }, { timestamps: true })
 
 export default mongoose.model('User', userSchema)
