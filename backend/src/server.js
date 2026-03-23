@@ -11,13 +11,10 @@ dotenv.config()
 
 const app = express()
 
-const uploadRoutes = require('./routes/upload')
-app.use('/api/upload', uploadRoutes)
-
-// Configuramos CORS para que acepte peticiones de tu frontend
+// Configuración de CORS
 app.use(cors())
 
-// Aumentamos el límite de tamaño para poder recibir imágenes sin errores
+// Middleware para recibir JSON y formularios con límite ampliado
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
@@ -27,15 +24,22 @@ app.use('/api/workers', workerRoutes)
 app.use('/api/bookings', bookingRoutes)
 app.use('/api/reviews', reviewRoutes)
 
+// Ruta raíz
 app.get('/', (req, res) => {
   res.json({ mensaje: 'API de Hana funcionando ✅' })
 })
 
-// Usamos el puerto del .env (que vimos que es el 5001 en tu caso)
+// Puerto
 const PORT = process.env.PORT || 5000
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Servidor corriendo en puerto ${PORT}`)
+// Conexión a BD + arranque del servidor
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Servidor corriendo en puerto ${PORT}`)
+    })
   })
-})
+  .catch((error) => {
+    console.error('Error al conectar la base de datos:', error)
+    process.exit(1)
+  })
