@@ -1,4 +1,5 @@
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import { Link } from 'react-router-dom'
 
 const estadisticas = [
@@ -272,7 +273,7 @@ function Impacto() {
             Por eso en Hana cada trabajadora es verificada, maneja su propia agenda, fija sus tarifas y construye su reputación con datos reales. Porque su seguridad y su autonomía también importan.
           </p>
           <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.7)', margin: '0 0 14px', lineHeight: '1.8', maxWidth: '640px', marginLeft: 'auto', marginRight: 'auto' }}>
-            Y cada clienta contrata con la certeza de saber exactamente a quién recibirá en su hogar, una profesional verificada, de confianza, que comparte su misma realidad.
+            Y cada clienta contrata con la certeza de saber exactamente a quién recibirá en su hogar, una profesional verificada, de confianza.
           </p>
           <p style={{ fontSize: '16px', color: '#e8b86d', margin: '0 0 32px', lineHeight: '1.8', maxWidth: '640px', marginLeft: 'auto', marginRight: 'auto', fontWeight: '600' }}>
             Usar Hana no es solo resolver una necesidad. Es apoyar el trabajo femenino, fortalecer la economía de otras mujeres y construir una comunidad donde todas estamos más seguras.
@@ -289,12 +290,7 @@ function Impacto() {
 
       </div>
 
-      {/* FOOTER */}
-      <footer style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 48px', backgroundColor: '#000000', borderTop: '3px solid transparent', borderImage: 'linear-gradient(to right, #d4537e, #e8b86d) 1', gap: '20px' }}>
-        <img src="/logoHana2.png" alt="Logo Hana" style={{ height: '200px', width: '200px', objectFit: 'contain' }} />
-        <span style={{ fontSize: '13px', color: '#cccccc', letterSpacing: '1px' }}>Conectando mujeres, construyendo confianza</span>
-        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)' }}>© 2025 Hana</span>
-      </footer>
+      <Footer />
 
     </div>
   )

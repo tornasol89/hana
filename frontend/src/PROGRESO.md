@@ -24,19 +24,25 @@ C:\Users\LENOVO\Desktop\hana
 - [x] Tailwind CSS instalado y configurado
 - [x] React Router instalado y configurado
 - [x] Estructura de carpetas creada (/pages y /components)
-- [x] Rutas configuradas en App.jsx (/, /login, /register-client, /register-worker, /worker/:id)
+- [x] Rutas configuradas en App.jsx (/, /login, /register-client, /register-worker, /worker/:id, /impacto, /compromiso)
 - [x] Home.jsx — carrusel hero con fotos de mujeres en distintos oficios (Pexels)
-- [x] Home.jsx — 16 categorías (8 tradicionales + 8 de empoderamiento con badge dorado)
+- [x] Home.jsx — 17 categorías (8 tradicionales + 8 de empoderamiento con badge dorado + Transporte y traslados pendiente de agregar)
 - [x] Home.jsx — banner degradado rosa/dorado
-- [x] Home.jsx — cards de trabajadoras destacadas con link al perfil
-- [x] Home.jsx — navbar detecta sesión activa y muestra "Hola, nombre + botón Salir"
-- [x] Navbar con logo HANA (círculo degradado rosa/dorado)
+- [x] Home.jsx — cards de trabajadoras destacadas con link al perfil real desde MongoDB
+- [x] Home.jsx — navbar sticky con Compromiso Hana banner
+- [x] Home.jsx — botón "Buscar servicios" con scroll suave a sección categorías
+- [x] Navbar.jsx — rediseñado con sticky, corona 👑, tagline "Hecho por mujeres, para mujeres", botones "Contratar servicios", "Ofrecer servicios" e "Ingresar"
+- [x] Navbar.jsx — detecta sesión activa y muestra "Hola, nombre 👑 + subtítulo verificada + botón Salir"
+- [x] Navbar.jsx — borde degradado rosa/dorado
 - [x] Login.jsx — formulario conectado al backend con JWT
-- [x] RegisterClient.jsx — registro conectado al backend con todas las regiones de Chile
-- [x] RegisterWorker.jsx — registro conectado al backend con 16 categorías
-- [x] WorkerProfile.jsx — perfil completo con foto hero, índice de confianza, métricas, certificados y reseñas
+- [x] RegisterClient.jsx — registro conectado al backend, protegido con verificación de Compromiso Hana
+- [x] RegisterWorker.jsx — registro conectado al backend con 16 categorías (pendiente protección compromiso)
+- [x] WorkerProfile.jsx — perfil completo con datos reales desde MongoDB, índice de confianza, métricas, certificados y reseñas
+- [x] Impacto.jsx — página completa con gráficos y cifras reales de Chile (INE, CASEN, Humanas, ChileMujeres)
+- [x] Compromiso.jsx — página con políticas de seguridad, logo Hana, 5 secciones y botones que guardan aceptación
 - [x] Diseño responsivo para móvil en todas las páginas
 - [x] Paleta de colores: fondo #1a0a10, rosa #d4537e, dorado #e8b86d
+- [x] Logo Hana (logoHana2.png sin fondo) en footer de Home, Impacto y Compromiso
 - [x] axios instalado para peticiones al backend
 
 ### BACKEND
@@ -44,44 +50,51 @@ C:\Users\LENOVO\Desktop\hana
 - [x] Servidor Node.js + Express corriendo en puerto 5000
 - [x] Conexión a MongoDB Atlas funcionando
 - [x] Variables de entorno configuradas (.env con MONGO_URI, JWT_SECRET, PORT)
-- [x] Modelo User (nombre, apellido, email, password, tipo, foto, carnet, rut, verificada, region, comuna)
+- [x] Modelo User (nombre, apellido, email, password, tipo, foto, carnet, rut, verificada, region, comuna, aceptoCompromiso, fechaAceptacion)
 - [x] Modelo WorkerProfile (usuario, categoria, descripcion, metricas, indiceConfianza, certificados)
 - [x] Modelo Booking (clienta, trabajadora, servicio, fecha, estado)
 - [x] Modelo Review (autor, destinataria, tipo, estrellas, metricas)
 - [x] Modelo Alert (trabajadora, clientaReportada, motivo)
-- [x] Ruta POST /api/auth/register — registro con bcrypt funcionando
-- [x] Ruta POST /api/auth/login — login con JWT funcionando
-- [x] Rutas base: /api/workers, /api/bookings, /api/reviews (pendientes de completar)
+- [x] Middleware auth.js — protege rutas con JWT
+- [x] Ruta POST /api/auth/register — registro con bcrypt + guarda aceptoCompromiso y fechaAceptacion
+- [x] Ruta POST /api/auth/login — login con JWT
+- [x] Ruta GET /api/workers — listar trabajadoras con filtros por categoría y región
+- [x] Ruta GET /api/workers/:id — perfil individual
+- [x] Ruta POST /api/workers — crear perfil (requiere login)
+- [x] Ruta PUT /api/workers/:id — editar perfil (solo la dueña)
+- [x] Ruta POST /api/bookings — crear reserva
+- [x] Ruta GET /api/bookings/mis-reservas — ver reservas de la usuaria
+- [x] Ruta PUT /api/bookings/:id/aceptar — trabajadora acepta
+- [x] Ruta PUT /api/bookings/:id/rechazar — trabajadora rechaza
+- [x] Ruta POST /api/reviews — crear evaluación
+- [x] Ruta GET /api/reviews/:usuarioId — ver evaluaciones con promedio
 - [x] nodemon instalado para desarrollo
 
 ### BASE DE DATOS
 
 - [x] MongoDB Atlas cluster activo (Clúster0)
-- [x] Usuario hana_admin creado con contraseña Hana2026Admin
+- [x] Usuario hana_admin creado
 - [x] IP 0.0.0.0/0 agregada (acceso universal para desarrollo)
 - [x] Colección usuarios con registros reales funcionando
 - [x] Contraseñas encriptadas con bcrypt verificadas en Atlas
+- [x] Trabajadoras de prueba creadas: Carla (Estética), María (Hogar), Valentina (Tutorías)
 
 ---
 
 ## LO QUE SIGUE AHORA 👇
 
-### SEMANA 2 — Lo que falta
+### PENDIENTE INMEDIATO
 
-- [ ] Completar rutas /api/workers (listar, filtrar por categoría y región)
-- [ ] Completar rutas /api/bookings (crear, aceptar, rechazar)
-- [ ] Completar rutas /api/reviews (crear evaluación)
+- [ ] Agregar categoría "Transporte y traslados" en Home.jsx, RegisterWorker.jsx y WorkerProfile.js (backend)
+- [ ] Proteger RegisterWorker.jsx con verificación de Compromiso Hana (igual que RegisterClient)
 - [ ] Subida de foto de perfil con Cloudinary
 - [ ] Verificación de carnet (subida de imagen + aprobación manual admin)
-- [ ] Integración preparada para Soyio API (verificación RUT)
-- [ ] Índice de confianza calculado desde datos reales del backend
 
 ### SEMANA 3 — Reservas y perfiles
 
-- [ ] Perfil de trabajadora con datos reales desde MongoDB
 - [ ] Perfil de clienta con foto y badge de confiabilidad
 - [ ] Calendario de disponibilidad de la trabajadora
-- [ ] Sistema de reservas con aceptar/rechazar
+- [ ] Sistema de reservas con aceptar/rechazar (frontend)
 - [ ] Notificaciones por email (Nodemailer)
 
 ### SEMANA 4 — Evaluaciones, búsqueda e impacto
@@ -90,7 +103,6 @@ C:\Users\LENOVO\Desktop\hana
 - [ ] Métricas automáticas calculadas desde reseñas reales
 - [ ] Sistema de alertas comunitarias sobre clientas
 - [ ] Buscador por categoría y comuna
-- [ ] Página "Nuestro impacto" con dashboard de cifras de Chile
 - [ ] Sección de capacitaciones (SENCE, ChileValora, MINVU)
 
 ### SEMANA 5 — Deploy y pulido
@@ -108,10 +120,8 @@ C:\Users\LENOVO\Desktop\hana
 2. Abrir carpeta hana
 3. Terminal 1: `cd frontend` → `npm run dev` → http://localhost:5173
 4. Terminal 2: `cd backend` → `npm run dev` → http://localhost:5000
-5. Subir este archivo PROGRESO.md a Claude y decir:
-   "Estoy construyendo el proyecto Hana, mi repositorio es github.com/tornasol89/hana.
-   Tengo el stack MERN completo funcionando. El registro y login con JWT están listos.
-   La navbar muestra el nombre de la usuaria logueada. Necesito continuar desde donde lo dejé."
+5. Subir este archivo PROGRESO.md al proyecto en Claude y decir:
+   "Estoy construyendo el proyecto Hana, continuamos desde donde quedamos."
 
 ---
 
@@ -167,8 +177,10 @@ hana/
 │       │   ├── Home.jsx ✅
 │       │   ├── Login.jsx ✅
 │       │   ├── RegisterClient.jsx ✅
-│       │   ├── RegisterWorker.jsx ✅
-│       │   └── WorkerProfile.jsx ✅
+│       │   ├── RegisterWorker.jsx ✅ (pendiente protección compromiso)
+│       │   ├── WorkerProfile.jsx ✅
+│       │   ├── Impacto.jsx ✅
+│       │   └── Compromiso.jsx ✅
 │       ├── components/
 │       │   ├── Navbar.jsx ✅
 │       │   └── Footer.jsx
@@ -177,18 +189,18 @@ hana/
 └── backend/
     └── src/
         ├── models/
-        │   ├── User.js ✅
+        │   ├── User.js ✅ (con aceptoCompromiso y fechaAceptacion)
         │   ├── WorkerProfile.js ✅
         │   ├── Booking.js ✅
         │   ├── Review.js ✅
         │   └── Alert.js ✅
         ├── routes/
-        │   ├── auth.js ✅ (register + login funcionando)
-        │   ├── workers.js (base creada)
-        │   ├── bookings.js (base creada)
-        │   └── reviews.js (base creada)
+        │   ├── auth.js ✅ (register + login + aceptoCompromiso)
+        │   ├── workers.js ✅ (4 rutas completas)
+        │   ├── bookings.js ✅ (4 rutas completas)
+        │   └── reviews.js ✅ (2 rutas completas)
         ├── middleware/
-        │   └── auth.js (pendiente)
+        │   └── auth.js ✅
         ├── config/
         │   └── db.js ✅
         └── server.js ✅
@@ -196,21 +208,28 @@ hana/
 
 ---
 
-## MEJORAS PLANIFICADAS PARA IMPLEMENTAR
+## ARCHIVOS ESTÁTICOS
 
-- [ ] Índice de confianza Hana (fórmula con 5 factores) — diseño listo, falta conectar al backend
+- frontend/public/logoHana2.png ✅ (sin fondo, 1.38MB)
+- frontend/public/favicon.svg ✅
+- frontend/public/icons.svg ✅
+
+---
+
+## MEJORAS PLANIFICADAS
+
+- [ ] Índice de confianza Hana calculado desde datos reales
 - [ ] Indicador disponible ahora (verde/rojo en perfil)
-- [ ] Cobertura nacional con todas las regiones — formulario listo ✅
-- [ ] Certificados de capacitación en perfil — diseño listo, falta subida real
-- [ ] Verificación de identidad con Soyio API (chilena, verifica RUT vs Registro Civil)
-- [ ] Como mejora futura: Jumio (verificación más robusta a nivel internacional)
-- [ ] Sistema de match inteligente (recomendaciones personalizadas)
+- [ ] Certificados de capacitación en perfil
+- [ ] Verificación de identidad con Soyio API (RUT vs Registro Civil)
+- [ ] Sistema de match inteligente
 - [ ] Botón de emergencia con ubicación para trabajadoras
-- [ ] Check-in / check-out del servicio
+- [ ] Check-in / check-out del servicio con geolocalización
+- [ ] Categoría "Transporte y traslados" ← pendiente agregar
 
 ---
 
 ## DOCUMENTOS GENERADOS
 
-- informe_hana_parcial1_v2.docx — Informe completo para Parcial 1 con diagramas
-- documentacion_tecnica_hana.docx — Documentación técnica del código
+- informe_hana_parcial1_v2.docx
+- documentacion_tecnica_hana.docx

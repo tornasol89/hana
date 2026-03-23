@@ -9,7 +9,8 @@ const workerProfileSchema = new mongoose.Schema({
       'Cocina y catering', 'Bienestar y salud', 'Cuidado de mascotas',
       'Cuidado infantil', 'Tecnología y diseño', 'Gasfitería',
       'Electricidad', 'Mecánica', 'Carpintería', 'Plomería',
-      'Pintura de interiores', 'Mudanzas y fletes', 'Jardinería'
+      'Pintura de interiores', 'Mudanzas y fletes', 'Jardinería',
+      'Transporte y traslados'
     ],
     required: true
   },

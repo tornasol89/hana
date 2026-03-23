@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 
 const slides = [
   {
@@ -48,6 +49,7 @@ const categorias = [
   { icono: '🎨', nombre: 'Pintura de interiores' },
   { icono: '📦', nombre: 'Mudanzas y fletes' },
   { icono: '🌿', nombre: 'Jardinería' },
+  { icono: '🚐', nombre: 'Transporte y traslados' },
 ]
 
 function useIsMobile() {
@@ -143,7 +145,7 @@ function Home() {
             >
               Buscar servicios
             </button>
-            <Link to="/register-worker" style={{ backgroundColor: 'transparent', color: '#e8b86d', border: '2px solid #e8b86d', padding: isMobile ? '12px 24px' : '14px 32px', borderRadius: '50px', textDecoration: 'none', fontSize: '15px', fontWeight: '600' }}>
+            <Link to="/compromiso?destino=trabajadora" style={{ backgroundColor: 'transparent', color: '#e8b86d', border: '2px solid #e8b86d', padding: isMobile ? '12px 24px' : '14px 32px', borderRadius: '50px', textDecoration: 'none', fontSize: '15px', fontWeight: '600' }}>
               Ofrecer mis servicios
             </Link>
           </div>
@@ -172,7 +174,7 @@ function Home() {
         <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.9)', letterSpacing: '2px', marginBottom: '10px', textTransform: 'uppercase' }}>¿Eres profesional?</p>
         <h2 style={{ fontSize: isMobile ? '22px' : '32px', fontWeight: '800', color: '#ffffff', margin: '0 0 14px' }}>Únete a Hana y haz crecer tu negocio</h2>
         <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.95)', maxWidth: '520px', margin: '0 auto 24px', lineHeight: '1.6' }}>Miles de clientas te están buscando. Crea tu perfil gratis y empieza hoy.</p>
-        <Link to="/register-worker" style={{ backgroundColor: 'white', color: '#b83060', padding: '13px 32px', borderRadius: '50px', textDecoration: 'none', fontSize: '15px', fontWeight: '700' }}>Crear mi perfil gratis →</Link>
+        <Link to="/compromiso?destino=trabajadora" style={{ backgroundColor: 'white', color: '#b83060', padding: '13px 32px', borderRadius: '50px', textDecoration: 'none', fontSize: '15px', fontWeight: '700' }}>Crear mi perfil gratis →</Link>
       </section>
 
       {/* CATEGORÍAS */}
@@ -233,12 +235,7 @@ function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 48px', backgroundColor: '#000000', borderTop: '3px solid transparent', borderImage: 'linear-gradient(to right, #d4537e, #e8b86d) 1', gap: '20px' }}>
-        <img src="/logoHana2.png" alt="Logo Hana" style={{ height: '200px', width: '200px', objectFit: 'contain' }} />
-        <span style={{ fontSize: '12px', color: '#cccccc', letterSpacing: '1px' }}>Conectando mujeres, construyendo confianza</span>
-        <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.3)' }}>© 2025 Hana</span>
-      </footer>
+      <Footer />
 
     </div>
   )

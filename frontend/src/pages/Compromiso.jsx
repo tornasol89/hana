@@ -1,4 +1,5 @@
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 function Compromiso() {
@@ -41,7 +42,7 @@ function Compromiso() {
         <div style={{ background: '#2d0a1e', borderRadius: '16px', padding: '36px', marginBottom: '24px', border: '1px solid rgba(212,83,126,0.3)' }}>
           <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#e8b86d', margin: '0 0 20px' }}>🛡️ Verificación de identidad obligatoria</h2>
           <p style={{ fontSize: '19px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.9', margin: '0 0 16px' }}>
-            Todas las usuarias de Hana — tanto clientas como trabajadoras — deben verificar su identidad con documento oficial vigente antes de poder acceder a los servicios de la plataforma.
+            Todas las usuarias de Hana,tanto clientas como trabajadoras, deben verificar su identidad con documento oficial vigente antes de poder acceder a los servicios de la plataforma.
           </p>
           <p style={{ fontSize: '19px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.9', margin: '0 0 12px' }}>
             Para completar el registro es obligatorio subir:
@@ -61,7 +62,7 @@ function Compromiso() {
         <div style={{ background: '#2d0a1e', borderRadius: '16px', padding: '36px', marginBottom: '24px', border: '1px solid rgba(212,83,126,0.3)' }}>
           <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#e8b86d', margin: '0 0 20px' }}>👑 Presencia obligatoria durante el servicio</h2>
           <p style={{ fontSize: '19px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.9', margin: '0 0 16px' }}>
-            La persona que contrata el servicio debe estar presente durante toda su ejecución. No está permitido que un tercero no incluido en el acuerdo reciba a la trabajadora en su lugar — sea pareja, familiar, vecino u otra persona.
+            La persona que contrata el servicio debe estar presente durante toda su ejecución. No está permitido que un tercero no incluido en el acuerdo reciba a la trabajadora en su lugar, sea pareja, familiar, vecino u otra persona.
           </p>
           <p style={{ fontSize: '19px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.9', margin: 0 }}>
             Si la clienta no puede estar presente, debe notificar a la trabajadora con anticipación suficiente para reorganizar la agenda.
@@ -77,7 +78,7 @@ function Compromiso() {
         <div style={{ background: '#2d0a1e', borderRadius: '16px', padding: '36px', marginBottom: '24px', border: '1px solid rgba(212,83,126,0.3)' }}>
           <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#e8b86d', margin: '0 0 20px' }}>🚫 La trabajadora acude sola al servicio</h2>
           <p style={{ fontSize: '19px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.9', margin: '0 0 16px' }}>
-            La trabajadora no está autorizada a llevar terceras personas al lugar del servicio — sean acompañantes, familiares, colegas u otras personas no incluidas en el acuerdo original.
+            La trabajadora no está autorizada a llevar terceras personas al lugar del servicio, sean acompañantes, familiares, colegas u otras personas no incluidas en el acuerdo original.
           </p>
           <p style={{ fontSize: '19px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.9', margin: 0 }}>
             Si por razones excepcionales necesita asistencia, debe notificarlo a la clienta con anticipación y obtener su aprobación explícita antes de proceder.
@@ -136,12 +137,7 @@ function Compromiso() {
 
       </div>
 
-      {/* FOOTER */}
-      <footer style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '40px 48px', backgroundColor: '#000000', borderTop: '3px solid transparent', borderImage: 'linear-gradient(to right, #d4537e, #e8b86d) 1', gap: '20px', marginTop: '40px' }}>
-        <img src="/logoHana2.png" alt="Logo Hana" style={{ height: '200px', width: '200px', objectFit: 'contain' }} />
-        <span style={{ fontSize: '14px', color: '#cccccc', letterSpacing: '1px' }}>Conectando mujeres, construyendo confianza</span>
-        <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)' }}>© 2025 Hana</span>
-      </footer>
+      <Footer />
 
     </div>
   )

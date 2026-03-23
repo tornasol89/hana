@@ -114,7 +114,7 @@ function Navbar() {
           <>
             {!isMobile && (
               <>
-                <Link to="/register-client" style={{
+                <Link to="/compromiso?destino=clienta" style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   padding: '9px 20px', borderRadius: '50px',
                   border: '1.5px solid #d4537e', background: 'transparent',
@@ -123,7 +123,7 @@ function Navbar() {
                 }}>
                   Contratar servicios
                 </Link>
-                <Link to="/register-worker" style={{
+                <Link to="/compromiso?destino=trabajadora" style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   padding: '9px 20px', borderRadius: '50px',
                   border: '1.5px solid #e8b86d', background: 'transparent',

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 const regiones = [
@@ -14,7 +14,8 @@ const categorias = [
   'Cocina y catering', 'Bienestar y salud', 'Cuidado de mascotas',
   'Cuidado infantil', 'Tecnología y diseño', 'Gasfitería',
   'Electricidad', 'Mecánica', 'Carpintería', 'Plomería',
-  'Pintura de interiores', 'Mudanzas y fletes', 'Jardinería'
+  'Pintura de interiores', 'Mudanzas y fletes', 'Jardinería',
+  'Transporte y traslados'
 ]
 
 function RegisterWorker() {
@@ -25,6 +26,14 @@ function RegisterWorker() {
   })
   const [error, setError] = useState('')
   const [cargando, setCargando] = useState(false)
+
+  // Protección — redirige si no aceptó el compromiso
+  useEffect(() => {
+    const acepto = localStorage.getItem('aceptoCompromiso')
+    if (!acepto) {
+      navigate('/compromiso')
+    }
+  }, [])
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -54,19 +63,17 @@ function RegisterWorker() {
         comuna: form.comuna,
       })
       const token = res.data.token
-localStorage.setItem('token', token)
-localStorage.setItem('usuario', JSON.stringify(res.data.usuario))
+      localStorage.setItem('token', token)
+      localStorage.setItem('usuario', JSON.stringify(res.data.usuario))
+      localStorage.removeItem('aceptoCompromiso')
+      localStorage.removeItem('fechaAceptacion')
 
-// Crear perfil de trabajadora automáticamente
-await axios.post(
-  'http://localhost:5000/api/workers',
-  {
-    categoria: form.categoria,
-    descripcion: '',
-    tarifaHora: 0
-  },
-  { headers: { Authorization: `Bearer ${token}` } }
-)
+      // Crear perfil de trabajadora automáticamente
+      await axios.post(
+        'http://localhost:5000/api/workers',
+        { categoria: form.categoria, descripcion: '', tarifaHora: 0 },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
 
 navigate('/')
     } catch (err) {
@@ -170,6 +177,10 @@ navigate('/')
             <div>
               <label style={labelStyle}>Confirmar contraseña *</label>
               <input name="confirmar" type="password" placeholder="Repite tu contraseña" value={form.confirmar} onChange={handleChange} style={inputStyle} />
+            </div>
+
+            <div style={{ background: 'rgba(232,184,109,0.08)', border: '1px solid rgba(232,184,109,0.3)', borderRadius: '8px', padding: '10px 14px', fontSize: '12px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6' }}>
+              ✅ Ya aceptaste el <Link to="/compromiso" style={{ color: '#e8b86d' }}>Compromiso Hana</Link>. Tu aceptación quedará registrada al crear tu perfil.
             </div>
 
             <button
