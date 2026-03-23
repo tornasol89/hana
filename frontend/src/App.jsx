@@ -6,11 +6,13 @@ import RegisterWorker from './pages/RegisterWorker'
 import WorkerProfile from './pages/WorkerProfile'
 import Impacto from './pages/Impacto'
 import Compromiso from './pages/Compromiso'
+import MiPerfil from './pages/Miperfil'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/mi-perfil" element={<MiPerfil />} />
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register-client" element={<RegisterClient />} />

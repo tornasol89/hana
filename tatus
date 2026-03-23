@@ -1,0 +1,5 @@
+[33m5dc362f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m feat: Footer component, protección Compromiso en RegisterWorker y categoría Transporte
+[33me2fe807[m feat: navbar mejorado, páginas Impacto, Compromiso y Cloudinary pendiente
+[33mda350c2[m feat: Home y WorkerProfile conectados al backend con datos reales
+[33mb0f814a[m feat: WorkerProfile conectado al backend con datos reales
+[33m2aeb8d2[m feat: middleware auth + rutas workers, bookings y reviews completas
