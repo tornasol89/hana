@@ -101,10 +101,19 @@ export default function Home() {
   const [catActiva, setCatActiva] = useState('todas')
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/workers')
-      .then(res => setTrabajadoras(res.data))
-      .catch(err => console.error(err))
+    cargarTrabajadoras()
   }, [])
+
+  async function cargarTrabajadoras() {
+    try {
+      const res = await axios.get('http://localhost:5000/api/workers')
+      console.log('Trabajadoras cargadas:', res.data)
+      setTrabajadoras(res.data || [])
+    } catch (err) {
+      console.error('Error cargando trabajadoras:', err)
+      setTrabajadoras([])
+    }
+  }
 
   const styles = `
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -157,6 +166,7 @@ export default function Home() {
     .hero {
       position: relative;
       overflow: hidden;
+      height: ${isMobile ? '500px' : '700px'};
     }
     .hero-slide {
       position: absolute;
@@ -164,6 +174,10 @@ export default function Home() {
       background-size: cover;
       background-position: center;
       transition: opacity 1.2s ease-in-out;
+      opacity: 0;
+    }
+    .hero-slide.activo {
+      opacity: 1;
     }
     .hero-overlay {
       position: absolute;
@@ -200,344 +214,338 @@ export default function Home() {
       font-weight: 700;
       line-height: 1.1;
       color: #ffffff;
-      margin: 0 0 14px;
+      font-size: ${isMobile ? '36px' : '56px'};
+      margin: 0 0 12px;
+      max-width: ${isMobile ? '320px' : '600px'};
     }
     .hero-subtitulo {
-      color: rgba(255,255,255,0.75);
-      margin: 0 0 8px;
-      font-weight: 300;
-    }
-    .hero-desc {
-      color: rgba(255,255,255,0.5);
-      max-width: 440px;
-      margin: 0 auto 32px;
-      line-height: 1.8;
-      font-size: 14px;
+      font-size: ${isMobile ? '16px' : '18px'};
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 32px;
+      max-width: ${isMobile ? '280px' : '500px'};
+      line-height: 1.4;
     }
     .hero-btns {
       display: flex;
-      gap: 14px;
-      justify-content: center;
+      gap: 12px;
       flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 40px;
     }
     .btn-primary {
       background: linear-gradient(135deg, #d4537e, #b83060);
       color: white;
       border: none;
       border-radius: 50px;
-      font-family: 'DM Sans', sans-serif;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
       text-decoration: none;
       display: inline-block;
+      font-family: 'DM Sans', sans-serif;
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-size: 15px;
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,83,126,0.4); }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(212,83,126,0.35);
+    }
     .btn-outline-gold {
       background: transparent;
       color: #e8b86d;
-      border: 1.5px solid #e8b86d;
+      border: 1.5px solid rgba(232,184,109,0.4);
       border-radius: 50px;
-      font-family: 'DM Sans', sans-serif;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s;
       text-decoration: none;
       display: inline-block;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+      font-size: 15px;
     }
-    .btn-outline-gold:hover { background: rgba(232,184,109,0.12); }
+    .btn-outline-gold:hover {
+      border-color: #e8b86d;
+      background: rgba(232,184,109,0.1);
+    }
     .hero-dots {
       display: flex;
-      gap: 8px;
-      margin-top: 32px;
       justify-content: center;
+      gap: 8px;
     }
     .hero-dot {
-      height: 6px;
+      height: 7px;
       border-radius: 50px;
       cursor: pointer;
-      transition: all 0.4s ease;
+      transition: all 0.3s;
     }
     .hero-stats {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
       display: flex;
       justify-content: center;
-      gap: 0;
-      background: rgba(15,5,8,0.75);
-      backdrop-filter: blur(8px);
-      border-top: 1px solid rgba(212,83,126,0.2);
+      gap: ${isMobile ? '20px' : '60px'};
+      padding-top: 24px;
       flex-wrap: wrap;
-      z-index: 3;
     }
     .hero-stat {
-      padding: 14px 32px;
       text-align: center;
-      border-right: 1px solid rgba(212,83,126,0.15);
     }
-    .hero-stat:last-child { border-right: none; }
     .hero-stat-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 700;
       color: #e8b86d;
+      font-weight: 700;
+      margin-bottom: 4px;
     }
     .hero-stat-label {
-      font-size: 10px;
-      color: rgba(255,255,255,0.45);
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
       letter-spacing: 1px;
       text-transform: uppercase;
-      margin-top: 2px;
     }
 
-    /* ── SECCIÓN CÓMO FUNCIONA ── */
+    /* SECCION PASOS */
     .seccion-pasos {
-      background: #0f0508;
-      border-top: 1px solid rgba(212,83,126,0.1);
-      border-bottom: 1px solid rgba(212,83,126,0.1);
+      background: linear-gradient(180deg, transparent, rgba(212,83,126,0.05));
     }
-    .paso-card {
-      flex: 1;
-      min-width: 200px;
-      position: relative;
-      padding-top: 32px;
-    }
-    .paso-numero {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 56px;
-      font-weight: 700;
-      color: rgba(232,184,109,0.12);
-      line-height: 1;
-      margin-bottom: -8px;
-    }
-    .paso-titulo {
-      font-weight: 600;
-      color: #ffffff;
-      margin: 0 0 8px;
-    }
-    .paso-desc {
-      font-size: 13px;
-      color: rgba(255,255,255,0.5);
-      line-height: 1.7;
-    }
-    .paso-linea {
-      position: absolute;
-      top: 44px;
-      right: 0;
-      width: 1px;
-      height: 80px;
-      background: linear-gradient(to bottom, rgba(212,83,126,0.4), transparent);
-    }
-
-    /* ── BANNER CTA ── */
-    .banner-cta {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg, #b83060 0%, #8b1d45 40%, #c4892a 100%);
-      text-align: center;
-    }
-    .banner-cta::before {
-      content: '';
-      position: absolute;
-      top: -60%;
-      left: -10%;
-      width: 60%;
-      height: 200%;
-      background: rgba(255,255,255,0.04);
-      border-radius: 50%;
-      transform: rotate(-15deg);
-    }
-    .banner-cta-label {
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.65);
-      margin-bottom: 12px;
-    }
-    .banner-cta-titulo {
-      font-family: 'Cormorant Garamond', serif;
-      color: #ffffff;
-      margin: 0 0 12px;
-      font-weight: 700;
-      line-height: 1.2;
-    }
-    .banner-cta-desc {
-      color: rgba(255,255,255,0.85);
-      font-size: 14px;
-      max-width: 480px;
-      margin: 0 auto 28px;
-      line-height: 1.7;
-    }
-    .btn-blanco {
-      background: white;
-      color: #b83060;
-      border: none;
-      border-radius: 50px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .btn-blanco:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
-
-    /* ── CATEGORÍAS ── */
-    .seccion-cats { background: #0f0508; }
-    .cats-tabs {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      margin-bottom: 32px;
-      flex-wrap: wrap;
-    }
-    .cat-tab {
-      padding: 8px 20px;
-      border-radius: 50px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid rgba(212,83,126,0.3);
-      background: transparent;
-      color: rgba(255,255,255,0.5);
-      font-family: 'DM Sans', sans-serif;
-    }
-    .cat-tab.activo {
-      background: rgba(212,83,126,0.2);
-      border-color: #d4537e;
-      color: #ffffff;
-    }
-    .cat-tab:hover { border-color: #d4537e; color: rgba(255,255,255,0.8); }
-    .cats-grid {
-      display: grid;
-      gap: 12px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .cat-card {
-      background: #1a0a10;
-      border: 1px solid rgba(212,83,126,0.2);
-      border-radius: 14px;
-      padding: 22px 14px 18px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      position: relative;
-      overflow: hidden;
-    }
-    .cat-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transition: opacity 0.25s;
-      background: radial-gradient(ellipse at 50% 0%, rgba(212,83,126,0.15), transparent 70%);
-    }
-    .cat-card:hover { border-color: #d4537e; transform: translateY(-3px); box-shadow: 0 12px 32px rgba(212,83,126,0.15); }
-    .cat-card:hover::before { opacity: 1; }
-    .cat-card.empod { border-color: rgba(232,184,109,0.3); }
-    .cat-card.empod:hover { border-color: #e8b86d; box-shadow: 0 12px 32px rgba(232,184,109,0.15); }
-    .cat-card.empod::before { background: radial-gradient(ellipse at 50% 0%, rgba(232,184,109,0.12), transparent 70%); }
-    .cat-icono { font-size: 28px; margin-bottom: 10px; display: block; }
-    .cat-nombre { font-size: 12px; color: #ffffff; font-weight: 500; line-height: 1.4; }
-    .cat-badge {
-      display: inline-block;
-      font-size: 9px;
-      color: #e8b86d;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-top: 6px;
-      border: 1px solid rgba(232,184,109,0.4);
-      padding: 2px 8px;
-      border-radius: 50px;
-    }
-
-    /* ── TRABAJADORAS ── */
-    .seccion-trabajadoras { background: #130710; }
-    .worker-card {
-      background: #1a0a10;
-      border: 1px solid rgba(212,83,126,0.2);
-      border-radius: 16px;
-      padding: 22px;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      text-decoration: none;
-      display: block;
-    }
-    .worker-card:hover { border-color: #d4537e; transform: translateY(-3px); box-shadow: 0 16px 40px rgba(212,83,126,0.12); }
-    .worker-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 15px;
-      color: white;
-      flex-shrink: 0;
-      position: relative;
-    }
-    .worker-avatar::after {
-      content: '✓';
-      position: absolute;
-      bottom: -2px;
-      right: -2px;
-      width: 16px;
-      height: 16px;
-      background: #e8b86d;
-      border-radius: 50%;
-      font-size: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #1a0a10;
-      font-weight: 800;
-    }
-    .worker-nombre { font-size: 14px; font-weight: 600; color: #ffffff; }
-    .worker-cat { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 2px; }
-    .worker-stars { color: #e8b86d; font-size: 12px; letter-spacing: 1px; margin: 12px 0 8px; }
-    .worker-desc { font-size: 12px; color: rgba(255,255,255,0.6); line-height: 1.7; }
-    .worker-dispo {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: rgba(212,83,126,0.12);
-      border: 1px solid rgba(212,83,126,0.3);
-      color: #ffb8d1;
-      font-size: 10px;
-      padding: 3px 10px;
-      border-radius: 50px;
-      margin-top: 12px;
-    }
-    .worker-dispo-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-    }
-
-    /* ── SECCIÓN TITULO COMPARTIDA ── */
     .seccion-titulo {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 700;
+      color: white;
+      margin: 0 0 16px;
       text-align: center;
-      color: #ffffff;
-      margin: 0 0 8px;
     }
     .seccion-subtitulo {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
       text-align: center;
-      color: rgba(255,255,255,0.4);
-      font-size: 13px;
-      margin: 0 auto 40px;
+      margin-bottom: 36px;
     }
     .seccion-linea {
       width: 48px;
       height: 2px;
-      background: linear-gradient(90deg, #d4537e, #e8b86d);
-      margin: 12px auto 20px;
-      border-radius: 2px;
+      background: linear-gradient(90deg, transparent, #d4537e, transparent);
+      margin: 0 auto 28px;
+    }
+    .paso-card {
+      position: relative;
+    }
+    .paso-numero {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: rgba(232,184,109,0.6);
+      margin-bottom: 8px;
+    }
+    .paso-titulo {
+      color: white;
+      margin: 0 0 8px;
+      font-weight: 600;
+    }
+    .paso-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .paso-linea {
+      position: absolute;
+      top: 20px;
+      left: -30px;
+      width: 60px;
+      height: 1px;
+      background: rgba(212,83,126,0.2);
+    }
+
+    /* BANNER CTA */
+    .banner-cta {
+      background: linear-gradient(135deg, rgba(212,83,126,0.08), rgba(232,184,109,0.06));
+      border: 1px solid rgba(212,83,126,0.15);
+      border-radius: 20px;
+      text-align: center;
+      margin: 0 auto;
+      max-width: 700px;
+    }
+    .banner-cta-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #d4537e;
+      margin-bottom: 12px;
+    }
+    .banner-cta-titulo {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      color: white;
+      margin: 0 0 16px;
+    }
+    .banner-cta-desc {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+    .btn-blanco {
+      background: white;
+      color: #1a0a10;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 36px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-blanco:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(255,255,255,0.15);
+    }
+
+    /* CATEGORIAS */
+    .seccion-cats {
+      padding-top: 52px;
+    }
+    .cats-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+    }
+    .cat-tab {
+      background: transparent;
+      border: 1px solid rgba(212,83,126,0.2);
+      color: rgba(255,255,255,0.5);
+      padding: 9px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .cat-tab:hover {
+      border-color: rgba(212,83,126,0.5);
+      color: rgba(255,255,255,0.8);
+    }
+    .cat-tab.activo {
+      background: rgba(212,83,126,0.15);
+      border-color: #d4537e;
+      color: #d4537e;
+    }
+    .cats-grid {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .cat-card {
+      background: rgba(212,83,126,0.08);
+      border: 1px solid rgba(212,83,126,0.2);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .cat-card:hover {
+      border-color: rgba(212,83,126,0.4);
+      background: rgba(212,83,126,0.12);
+    }
+    .cat-card.empod {
+      background: rgba(232,184,109,0.08);
+      border-color: rgba(232,184,109,0.2);
+    }
+    .cat-card.empod:hover {
+      border-color: rgba(232,184,109,0.4);
+      background: rgba(232,184,109,0.12);
+    }
+    .cat-icono {
+      font-size: 28px;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .cat-nombre {
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 4px;
+    }
+    .cat-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #e8b86d;
+      color: #1a0a10;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* TRABAJADORAS */
+    .seccion-trabajadoras {
+      padding-bottom: 72px;
+    }
+    .worker-card {
+      background: #1a0a10;
+      border: 1px solid rgba(212,83,126,0.2);
+      border-radius: 14px;
+      padding: 20px;
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s;
+    }
+    .worker-card:hover {
+      border-color: rgba(212,83,126,0.5);
+      background: rgba(212,83,126,0.04);
+    }
+    .worker-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    .worker-nombre {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+    .worker-cat {
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 12px;
+    }
+    .worker-stars {
+      color: #e8b86d;
+      font-size: 14px;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+    .worker-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.4;
+      margin-bottom: 12px;
+      min-height: 36px;
+    }
+    .worker-dispo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+    }
+    .worker-dispo-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: block;
     }
   `
 
@@ -549,35 +557,27 @@ export default function Home() {
 
         {/* BANNER COMPROMISO */}
         <div className="banner-compromiso">
-          <span style={{ fontSize: '13px' }}>⚠️</span>
-          <span className="banner-texto">
-            Hana requiere verificación de identidad. Sin verificación no puedes contratar ni ofrecer servicios.
-          </span>
-          <Link to="/compromiso" className="banner-link">Leer Compromiso Hana →</Link>
+          <p className="banner-texto">🛡️ Hana es el lugar seguro para mujeres que buscan y ofrecen servicios</p>
+          <Link to="/compromiso" className="banner-link">Ver nuestro compromiso →</Link>
         </div>
 
         {/* HERO */}
-        <section className="hero" style={{ height: isMobile ? '520px' : '620px' }}>
+        <section className="hero">
           {slides.map((slide, i) => (
             <div
               key={i}
-              className="hero-slide"
-              style={{ backgroundImage: `url(${slide.url})`, opacity: i === slideActual ? 1 : 0 }}
+              className={`hero-slide ${i === slideActual ? 'activo' : ''}`}
+              style={{ backgroundImage: `url(${slide.url})` }}
             />
           ))}
           <div className="hero-overlay" />
           <div className="hero-content">
             <div className="hero-badge">
-              ✦ La plataforma hecha por mujeres, para mujeres
+              ⭐ Confianza y calidad
             </div>
-            <h1 className="hero-titulo" style={{ fontSize: isMobile ? '36px' : '62px' }}>
-              {slides[slideActual].titulo}
-            </h1>
-            <p className="hero-subtitulo" style={{ fontSize: isMobile ? '15px' : '19px' }}>
-              {slides[slideActual].subtitulo}
-            </p>
-            <p className="hero-desc">
-              Conectamos mujeres que buscan servicios de confianza con profesionales verificadas.
+            <h1 className="hero-titulo">Hecho por mujeres, para mujeres</h1>
+            <p className="hero-subtitulo">
+              Conecta con profesionales verificadas en tu área
             </p>
             <div className="hero-btns">
               <button
@@ -733,17 +733,17 @@ export default function Home() {
           <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '16px', maxWidth: '960px', margin: '0 auto' }}>
             {trabajadoras.length === 0 ? (
               <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', gridColumn: '1/-1', fontSize: '14px' }}>
-                Aún no hay profesionales registradas.
+                Aún no hay profesionales registradas. Sé la primera en ofrecerlas.
               </p>
             ) : (
-              trabajadoras.map((w, idx) => {
+              trabajadoras.slice(0, 6).map((w, idx) => {
                 const nombre = `${w.usuario?.nombre || ''} ${w.usuario?.apellido || ''}`
                 const iniciales = `${w.usuario?.nombre?.charAt(0) || ''}${w.usuario?.apellido?.charAt(0) || ''}`
                 const region = w.usuario?.region || ''
                 const color = coloresAvatar[idx % coloresAvatar.length]
                 return (
                   <Link key={w._id} to={`/worker/${w._id}`} className="worker-card">
-                    <div style={{ display: 'flex', gap: '14px', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '14px', alignItems: 'center', marginBottom: '12px' }}>
                       <div className="worker-avatar" style={{ backgroundColor: color }}>
                         {iniciales}
                       </div>

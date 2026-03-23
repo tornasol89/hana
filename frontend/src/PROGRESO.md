@@ -127,12 +127,7 @@ C:\Users\LENOVO\Desktop\hana
 
 ## CREDENCIALES IMPORTANTES (guardar en lugar seguro)
 
-- MongoDB Atlas usuario: hana_admin
-- MongoDB Atlas contraseña: Hana2026Admin
-- Cluster: cluster0.bbrcmlj.mongodb.net
-- Base de datos: hana
-
----
+- ***
 
 ## COMANDOS QUE MÁS USARÁS
 

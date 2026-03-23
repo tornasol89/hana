@@ -24,6 +24,8 @@ const styles = `
     position: relative;
     animation: bm-slide-up 0.25s ease;
     font-family: 'DM Sans', sans-serif;
+    max-height: 90vh;
+    overflow-y: auto;
   }
   @keyframes bm-slide-up { from { transform: translateY(20px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
 
@@ -32,6 +34,7 @@ const styles = `
     background: transparent; border: none; color: rgba(255,255,255,0.4);
     font-size: 20px; cursor: pointer; transition: color 0.2s;
     line-height: 1;
+    z-index: 10;
   }
   .bm-cerrar:hover { color: white; }
 
@@ -59,9 +62,19 @@ const styles = `
   .bm-textarea { resize: vertical; min-height: 90px; }
 
   .bm-horarios { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
-  .bm-hora { padding: 9px 6px; border-radius: 8px; border: 1px solid rgba(212,83,126,0.2); background: transparent; color: rgba(255,255,255,0.5); font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; text-align: center; }
+  .bm-hora { 
+    padding: 9px 6px; border-radius: 8px; border: 1px solid rgba(212,83,126,0.2); 
+    background: transparent; color: rgba(255,255,255,0.5); font-size: 12px; 
+    cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; 
+    text-align: center; font-weight: 500;
+  }
+  .bm-hora:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    color: rgba(255,255,255,0.2);
+  }
   .bm-hora.seleccionado { background: rgba(212,83,126,0.2); border-color: #d4537e; color: white; }
-  .bm-hora:hover:not(.seleccionado) { border-color: rgba(212,83,126,0.5); color: rgba(255,255,255,0.8); }
+  .bm-hora:hover:not(.seleccionado):not(:disabled) { border-color: rgba(212,83,126,0.5); color: rgba(255,255,255,0.8); }
 
   .bm-btn {
     width: 100%;
@@ -75,7 +88,8 @@ const styles = `
   .bm-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,83,126,0.35); }
   .bm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .bm-alert { border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 13px; }
+  .bm-alert { border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; font-size: 13px; animation: bm-slide-down 0.3s ease; }
+  @keyframes bm-slide-down { from { transform: translateY(-10px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
   .bm-alert.error { background: rgba(212,83,126,0.12); border: 1px solid rgba(212,83,126,0.3); color: #ffb8d1; }
   .bm-alert.success { background: rgba(93,202,165,0.12); border: 1px solid rgba(93,202,165,0.3); color: #5DCAA5; }
 
@@ -89,10 +103,18 @@ const HORAS_DISP = ['09:00', '10:00', '11:00', '12:00', '14:00', '15:00', '16:00
 // Props:
 // - trabajadoraId: string
 // - trabajadoraNombre: string
-// - categoria: string
+// - categoria: string (opcional)
 // - onClose: () => void
 // - onReservaExitosa: () => void (opcional)
-export default function BookingModal({ trabajadoraId, trabajadoraNombre, categoria, onClose, onReservaExitosa }) {
+// - horasOcupadas: string[] (opcional, ej: ['09:00', '10:00'])
+export default function BookingModal({ 
+  trabajadoraId, 
+  trabajadoraNombre, 
+  categoria, 
+  onClose, 
+  onReservaExitosa,
+  horasOcupadas = []
+}) {
   const token = localStorage.getItem('token')
   const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null
 
@@ -104,44 +126,92 @@ export default function BookingModal({ trabajadoraId, trabajadoraNombre, categor
   const [alerta, setAlerta] = useState(null)
 
   const hoyStr = new Date().toISOString().split('T')[0]
+  
+  // Calcular 30 días adelante para límite de reserva
+  const max30 = new Date()
+  max30.setDate(max30.getDate() + 30)
+  const max30Str = max30.toISOString().split('T')[0]
+
+  function validar() {
+    if (!fecha) {
+      setAlerta({ tipo: 'error', msg: 'Por favor selecciona una fecha.' })
+      return false
+    }
+    if (!hora) {
+      setAlerta({ tipo: 'error', msg: 'Por favor selecciona una hora.' })
+      return false
+    }
+    if (!servicio.trim()) {
+      setAlerta({ tipo: 'error', msg: 'Por favor describe el tipo de servicio.' })
+      return false
+    }
+    if (servicio.trim().length < 5) {
+      setAlerta({ tipo: 'error', msg: 'La descripción del servicio debe tener al menos 5 caracteres.' })
+      return false
+    }
+    return true
+  }
 
   async function handleSubmit() {
-    if (!fecha || !hora || !servicio) {
-      setAlerta({ tipo: 'error', msg: 'Por favor completa fecha, hora y tipo de servicio.' })
-      return
-    }
+    if (!validar()) return
 
     setEnviando(true)
     setAlerta(null)
 
     try {
       const fechaCompleta = new Date(`${fecha}T${hora}:00`)
-      await axios.post('http://localhost:5000/api/bookings', {
+      
+      const response = await axios.post('http://localhost:5000/api/bookings', {
         trabajadora: trabajadoraId,
-        servicio,
+        servicio: servicio.trim(),
         fecha: fechaCompleta.toISOString(),
-        notas,
+        notas: notas.trim(),
       }, {
         headers: { Authorization: `Bearer ${token}` }
       })
 
-      setAlerta({ tipo: 'success', msg: '¡Reserva enviada exitosamente! La profesional la revisará pronto.' })
-      if (onReservaExitosa) onReservaExitosa()
-      setTimeout(onClose, 2500)
+      if (response.status === 201 || response.status === 200) {
+        setAlerta({ tipo: 'success', msg: '✓ ¡Reserva enviada! La profesional la revisará pronto.' })
+        
+        // Limpiar formulario
+        setFecha('')
+        setHora('')
+        setServicio(categoria || '')
+        setNotas('')
+        
+        // Callback después de 1.5 segundos
+        setTimeout(() => {
+          if (onReservaExitosa) onReservaExitosa()
+          onClose()
+        }, 1500)
+      }
     } catch (err) {
-      const msg = err.response?.data?.message || 'Error al enviar la reserva. Intenta de nuevo.'
+      const msg = err.response?.data?.message || 
+                  err.message || 
+                  'Error al enviar la reserva. Intenta de nuevo.'
       setAlerta({ tipo: 'error', msg })
-    } finally {
       setEnviando(false)
     }
   }
 
+  const horaDisponible = (h) => !horasOcupadas.includes(h)
+
   return (
     <>
       <style>{styles}</style>
-      <div className="bm-overlay" onClick={e => e.target.classList.contains('bm-overlay') && onClose()}>
+      <div 
+        className="bm-overlay" 
+        onClick={e => e.target.classList.contains('bm-overlay') && !enviando && onClose()}
+      >
         <div className="bm-modal">
-          <button className="bm-cerrar" onClick={onClose}>✕</button>
+          <button 
+            className="bm-cerrar" 
+            onClick={onClose}
+            disabled={enviando}
+            title="Cerrar modal"
+          >
+            ✕
+          </button>
 
           <h2 className="bm-titulo">Reservar servicio</h2>
           <p className="bm-subtitulo">con {trabajadoraNombre}</p>
@@ -154,39 +224,49 @@ export default function BookingModal({ trabajadoraId, trabajadoraNombre, categor
           ) : (
             <>
               {alerta && (
-                <div className={`bm-alert ${alerta.tipo}`}>{alerta.msg}</div>
+                <div className={`bm-alert ${alerta.tipo}`} role="alert">
+                  {alerta.msg}
+                </div>
               )}
 
               <div className="bm-field">
                 <label className="bm-label">Tipo de servicio</label>
                 <input
                   className="bm-input"
-                  placeholder="Ej: Corte de pelo, Gasfitería urgente…"
+                  placeholder="Ej: Corte de pelo, Reparación de gasfitería…"
                   value={servicio}
                   onChange={e => setServicio(e.target.value)}
+                  disabled={enviando}
                 />
+                <small style={{ color: 'rgba(255,255,255,0.3)', fontSize: '11px', marginTop: '4px', display: 'block' }}>
+                  {servicio.length}/100
+                </small>
               </div>
 
               <div className="bm-field">
-                <label className="bm-label">Fecha</label>
+                <label className="bm-label">Fecha (máximo 30 días)</label>
                 <input
                   className="bm-input"
                   type="date"
                   min={hoyStr}
+                  max={max30Str}
                   value={fecha}
                   onChange={e => setFecha(e.target.value)}
+                  disabled={enviando}
                   style={{ colorScheme: 'dark' }}
                 />
               </div>
 
               <div className="bm-field">
-                <label className="bm-label">Hora</label>
+                <label className="bm-label">Hora disponible</label>
                 <div className="bm-horarios">
                   {HORAS_DISP.map(h => (
                     <button
                       key={h}
                       className={`bm-hora ${hora === h ? 'seleccionado' : ''}`}
                       onClick={() => setHora(h)}
+                      disabled={!horaDisponible(h) || enviando}
+                      title={!horaDisponible(h) ? 'Hora ocupada' : ''}
                     >
                       {h}
                     </button>
@@ -201,11 +281,20 @@ export default function BookingModal({ trabajadoraId, trabajadoraNombre, categor
                   placeholder="Describe lo que necesitas con más detalle…"
                   value={notas}
                   onChange={e => setNotas(e.target.value)}
+                  disabled={enviando}
+                  maxLength={500}
                 />
+                <small style={{ color: 'rgba(255,255,255,0.3)', fontSize: '11px', marginTop: '4px', display: 'block' }}>
+                  {notas.length}/500
+                </small>
               </div>
 
-              <button className="bm-btn" onClick={handleSubmit} disabled={enviando}>
-                {enviando ? 'Enviando reserva…' : 'Confirmar reserva →'}
+              <button 
+                className="bm-btn" 
+                onClick={handleSubmit} 
+                disabled={enviando || !fecha || !hora || !servicio.trim()}
+              >
+                {enviando ? '⏳ Enviando reserva…' : '✓ Confirmar reserva →'}
               </button>
             </>
           )}
