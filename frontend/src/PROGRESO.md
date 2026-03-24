@@ -1,230 +1,396 @@
-# Proyecto Hana — Registro de Progreso
+# PROYECTO HANA — BITÁCORA DE AVANCE DETALLADA
 
-## ¿Qué es este proyecto?
+## 1. RESUMEN DEL PROYECTO
 
-Plataforma web que conecta mujeres que necesitan contratar servicios con mujeres que los ofrecen.
-Stack: React + Vite + Tailwind CSS (frontend) / Node.js + Express + MongoDB (backend)
-Nombre del stack completo: MERN (MongoDB, Express, React, Node.js)
+**Hana** es una plataforma web pensada para conectar mujeres que necesitan contratar servicios con mujeres que los ofrecen, en un entorno seguro, verificado y orientado a la confianza.
 
-## Repositorio GitHub
+### Propósito del proyecto
 
-https://github.com/tornasol89/hana
+- Facilitar la contratación de servicios entre mujeres.
+- Promover la autonomía económica femenina.
+- Crear una comunidad confiable y protegida.
+- Diferenciarse por seguridad, verificación y compromiso mutuo.
 
-## Ubicación en el computador
+### Stack tecnológico
 
-C:\Users\LENOVO\Desktop\hana
+- **Frontend:** React + Vite
+- **Backend:** Node.js + Express
+- **Base de datos:** MongoDB Atlas
+- **Autenticación:** JWT
+- **ORM / ODM:** Mongoose
+- **HTTP client:** axios
+- **Estilos:** CSS + diseño custom
+- **Control de versiones:** Git + GitHub
 
----
+### Repositorio
 
-## LO QUE YA ESTÁ HECHO ✅
+`https://github.com/tornasol89/hana`
 
-### FRONTEND
+### Ruta local del proyecto
 
-- [x] Proyecto React creado con Vite dentro de /frontend
-- [x] Tailwind CSS instalado y configurado
-- [x] React Router instalado y configurado
-- [x] Estructura de carpetas creada (/pages y /components)
-- [x] Rutas configuradas en App.jsx (/, /login, /register-client, /register-worker, /worker/:id, /impacto, /compromiso)
-- [x] Home.jsx — carrusel hero con fotos de mujeres en distintos oficios (Pexels)
-- [x] Home.jsx — 17 categorías (8 tradicionales + 8 de empoderamiento con badge dorado + Transporte y traslados pendiente de agregar)
-- [x] Home.jsx — banner degradado rosa/dorado
-- [x] Home.jsx — cards de trabajadoras destacadas con link al perfil real desde MongoDB
-- [x] Home.jsx — navbar sticky con Compromiso Hana banner
-- [x] Home.jsx — botón "Buscar servicios" con scroll suave a sección categorías
-- [x] Navbar.jsx — rediseñado con sticky, corona 👑, tagline "Hecho por mujeres, para mujeres", botones "Contratar servicios", "Ofrecer servicios" e "Ingresar"
-- [x] Navbar.jsx — detecta sesión activa y muestra "Hola, nombre 👑 + subtítulo verificada + botón Salir"
-- [x] Navbar.jsx — borde degradado rosa/dorado
-- [x] Login.jsx — formulario conectado al backend con JWT
-- [x] RegisterClient.jsx — registro conectado al backend, protegido con verificación de Compromiso Hana
-- [x] RegisterWorker.jsx — registro conectado al backend con 16 categorías (pendiente protección compromiso)
-- [x] WorkerProfile.jsx — perfil completo con datos reales desde MongoDB, índice de confianza, métricas, certificados y reseñas
-- [x] Impacto.jsx — página completa con gráficos y cifras reales de Chile (INE, CASEN, Humanas, ChileMujeres)
-- [x] Compromiso.jsx — página con políticas de seguridad, logo Hana, 5 secciones y botones que guardan aceptación
-- [x] Diseño responsivo para móvil en todas las páginas
-- [x] Paleta de colores: fondo #1a0a10, rosa #d4537e, dorado #e8b86d
-- [x] Logo Hana (logoHana2.png sin fondo) en footer de Home, Impacto y Compromiso
-- [x] axios instalado para peticiones al backend
-
-### BACKEND
-
-- [x] Servidor Node.js + Express corriendo en puerto 5000
-- [x] Conexión a MongoDB Atlas funcionando
-- [x] Variables de entorno configuradas (.env con MONGO_URI, JWT_SECRET, PORT)
-- [x] Modelo User (nombre, apellido, email, password, tipo, foto, carnet, rut, verificada, region, comuna, aceptoCompromiso, fechaAceptacion)
-- [x] Modelo WorkerProfile (usuario, categoria, descripcion, metricas, indiceConfianza, certificados)
-- [x] Modelo Booking (clienta, trabajadora, servicio, fecha, estado)
-- [x] Modelo Review (autor, destinataria, tipo, estrellas, metricas)
-- [x] Modelo Alert (trabajadora, clientaReportada, motivo)
-- [x] Middleware auth.js — protege rutas con JWT
-- [x] Ruta POST /api/auth/register — registro con bcrypt + guarda aceptoCompromiso y fechaAceptacion
-- [x] Ruta POST /api/auth/login — login con JWT
-- [x] Ruta GET /api/workers — listar trabajadoras con filtros por categoría y región
-- [x] Ruta GET /api/workers/:id — perfil individual
-- [x] Ruta POST /api/workers — crear perfil (requiere login)
-- [x] Ruta PUT /api/workers/:id — editar perfil (solo la dueña)
-- [x] Ruta POST /api/bookings — crear reserva
-- [x] Ruta GET /api/bookings/mis-reservas — ver reservas de la usuaria
-- [x] Ruta PUT /api/bookings/:id/aceptar — trabajadora acepta
-- [x] Ruta PUT /api/bookings/:id/rechazar — trabajadora rechaza
-- [x] Ruta POST /api/reviews — crear evaluación
-- [x] Ruta GET /api/reviews/:usuarioId — ver evaluaciones con promedio
-- [x] nodemon instalado para desarrollo
-
-### BASE DE DATOS
-
-- [x] MongoDB Atlas cluster activo (Clúster0)
-- [x] Usuario hana_admin creado
-- [x] IP 0.0.0.0/0 agregada (acceso universal para desarrollo)
-- [x] Colección usuarios con registros reales funcionando
-- [x] Contraseñas encriptadas con bcrypt verificadas en Atlas
-- [x] Trabajadoras de prueba creadas: Carla (Estética), María (Hogar), Valentina (Tutorías)
+`C:\Users\LENOVO\Desktop\hana`
 
 ---
 
-## LO QUE SIGUE AHORA 👇
+## 2. ESTADO ACTUAL DEL PROYECTO
 
-### PENDIENTE INMEDIATO
+### Estado general actual
 
-- [ ] Agregar categoría "Transporte y traslados" en Home.jsx, RegisterWorker.jsx y WorkerProfile.js (backend)
-- [ ] Proteger RegisterWorker.jsx con verificación de Compromiso Hana (igual que RegisterClient)
-- [ ] Subida de foto de perfil con Cloudinary
-- [ ] Verificación de carnet (subida de imagen + aprobación manual admin)
+El proyecto **ya levanta frontend y backend**, conecta con MongoDB y permite:
 
-### SEMANA 3 — Reservas y perfiles
+- registrar usuarias,
+- registrar trabajadoras,
+- crear perfil profesional,
+- mostrar profesionales en Home,
+- ver detalle individual de una profesional,
+- iniciar el flujo de Compromiso Hana.
 
-- [ ] Perfil de clienta con foto y badge de confiabilidad
-- [ ] Calendario de disponibilidad de la trabajadora
-- [ ] Sistema de reservas con aceptar/rechazar (frontend)
-- [ ] Notificaciones por email (Nodemailer)
+El proyecto **ya dejó atrás la etapa de caídas graves de backend** y ahora está entrando en fase de:
 
-### SEMANA 4 — Evaluaciones, búsqueda e impacto
+- pulido de flujo,
+- coherencia UX,
+- revisión de navegación,
+- y robustecimiento funcional.
 
-- [ ] Evaluación bidireccional (clienta → trabajadora y trabajadora → clienta)
-- [ ] Métricas automáticas calculadas desde reseñas reales
-- [ ] Sistema de alertas comunitarias sobre clientas
-- [ ] Buscador por categoría y comuna
-- [ ] Sección de capacitaciones (SENCE, ChileValora, MINVU)
+---
 
-### SEMANA 5 — Deploy y pulido
+## 3. LO QUE YA SE HIZO Y QUEDÓ FUNCIONANDO
+
+# 3.1 BACKEND
+
+## 3.1.1 Servidor y configuración
+
+- Se corrigió el backend para que funcione con **ES Modules**.
+- Se eliminó el uso incorrecto de `require()` dentro de `server.js`.
+- Se dejó `server.js` usando solo `import/export`.
+- Se corrigió el arranque del servidor.
+- Se agregó manejo de error limpio en la conexión a base de datos.
+
+## 3.1.2 Variables de entorno
+
+- Se corrigió el problema de lectura de variables del `.env`.
+- Se detectó que el backend esperaba `MONGODB_URI`.
+- Se corrigió el error donde estaba como `MONGO_URI`.
+- Se logró levantar el backend y conectar MongoDB correctamente.
+
+## 3.1.3 Seguridad básica del repositorio
+
+- Se eliminó `.env` del seguimiento de Git.
+- Se eliminó `node_modules` del repo.
+- Se corrigió `backend/.gitignore`.
+- Se agregó archivo `.env.example` como plantilla.
+- Se identificó que credenciales reales fueron expuestas anteriormente y se dejó pendiente rotarlas.
+
+## 3.1.4 Autenticación
+
+- Se corrigió el bug en `auth.js` donde se usaba `auth` en vez de `protegerRuta`.
+- Se unificó el uso de `req.usuario`.
+- Se dejó funcionando:
+  - `POST /api/auth/register`
+  - `POST /api/auth/login`
+  - `PUT /api/auth/me`
+  - `POST /api/auth/upload-photo`
+
+## 3.1.5 Modelos detectados y funcionales
+
+Existen los siguientes modelos:
+
+- `User`
+- `WorkerProfile`
+- `Booking`
+- `Review`
+- `Alert`
+
+## 3.1.6 Rutas operativas
+
+Se verificó o corrigió funcionamiento base de:
+
+- `/api/auth`
+- `/api/workers`
+- `/api/bookings`
+- `/api/reviews`
+
+---
+
+# 3.2 FRONTEND
+
+## 3.2.1 Estructura general
+
+Se confirmó y corrigió estructura con rutas:
+
+- `/`
+- `/login`
+- `/register-client`
+- `/register-worker`
+- `/worker/:id`
+- `/impacto`
+- `/compromiso`
+- `/mi-perfil`
+
+## 3.2.2 App.jsx
+
+- Se revisó `App.jsx`.
+- Se corrigió import de `MiPerfil` por posible problema de mayúsculas/minúsculas.
+- Se confirmó que las rutas base existen.
+
+## 3.2.3 Home.jsx
+
+Se corrigieron varias cosas importantes:
+
+### Cambios realizados
+
+- Se eliminó el botón duplicado de “Ofrecer mis servicios” en el hero.
+- Se rediseñó la sección “Cómo funciona”.
+- Se mejoró la estructura visual del Home.
+- Se dejaron secciones con `id` para navegación:
+  - `#como-funciona`
+  - `#categorias`
+  - `#profesionales`
+- Se corrigió el CTA “Crear mi perfil gratis”.
+- Se corrigió la lógica para que las profesionales se carguen desde backend.
+- Se agregó lógica para mostrar más profesionales si existen más en base de datos.
+- Se detectó que si no aparecen más de 3, no es bug del botón, sino del volumen de datos que realmente devuelve `/api/workers`.
+
+### Estado actual del Home
+
+- Ya muestra profesionales reales desde MongoDB.
+- Ya puede sumar nuevas trabajadoras registradas.
+- Ya no está dependiendo solo de perfiles “inventados” si el backend devuelve datos.
+
+## 3.2.4 Navbar.jsx
+
+Se corrigió la navegación del menú superior.
+
+### Antes
+
+- “Servicios” no llevaba a nada útil.
+- “Profesionales” no llevaba a nada útil.
+- algunos botones generaban flujo incoherente hacia compromiso.
+
+### Ahora
+
+- `Servicios` baja a la sección correcta.
+- `Profesionales` baja a la sección correcta.
+- se dejó más coherente la navegación superior.
+- aún queda pendiente unificar todos los CTA del sitio con el flujo obligatorio de Compromiso.
+
+## 3.2.5 WorkerProfile.jsx
+
+Este fue uno de los arreglos más importantes.
+
+### Problemas detectados
+
+- Pantalla en blanco al entrar a una profesional.
+- El componente intentaba leer campos que no coincidían con la estructura real del backend.
+- Se mostraba `NaN` en el Índice Hana.
+- El estilo estaba roto/incompleto.
+- Había lógica inconsistente para determinar si era “mi perfil”.
+
+### Correcciones realizadas
+
+- Se reescribió `WorkerProfile.jsx` para usar la estructura real:
+  - `perfil.usuario.nombre`
+  - `perfil.usuario.apellido`
+  - `perfil.categoria`
+  - `perfil.descripcion`
+  - `perfil.usuario.region`
+  - `perfil.usuario.comuna`
+- Se corrigió el cálculo del Índice Hana.
+- Se corrigió el render para evitar pantallas vacías.
+- Se corrigió el diseño visual completo del perfil.
+- Se dejó funcionando el botón de volver.
+
+### Estado actual
+
+- El perfil profesional ya se ve como una ficha real.
+- Ya abre correctamente desde las cards del Home.
+- Ya no deja la pantalla en blanco.
+
+## 3.2.6 Compromiso.jsx
+
+Se detectó que el flujo estaba mal armado a nivel UX aunque técnicamente existía.
+
+### Problemas detectados
+
+- La página abría “a la mitad”.
+- No quedaba claro que primero había que leer y después aceptar.
+- Mostraba dos botones incluso cuando ya venías con destino claro (`clienta` o `trabajadora`).
+
+### Correcciones realizadas
+
+- Se agregó `window.scrollTo(0, 0)` al cargar.
+- Se agregó introducción más clara.
+- Se dejó lógica por `destino`:
+  - `?destino=trabajadora`
+  - `?destino=clienta`
+- Se corrigió para que si viene destino, se muestre un solo botón final.
+- Se mantuvo almacenamiento en `localStorage`:
+  - `aceptoCompromiso`
+  - `fechaAceptacion`
+
+### Estado actual
+
+- La página ya funciona mejor como paso previo.
+- Sigue pendiente cerrar completamente el flujo desde todos los botones del sitio.
+
+## 3.2.7 RegisterWorker.jsx
+
+Aquí hubo una corrección funcional clave.
+
+### Problema detectado
+
+La trabajadora podía llegar al formulario, pero al enviar el backend respondía:
+**“Debes aceptar el Compromiso Hana”**
+
+### Causa
+
+El frontend no estaba enviando:
+
+- `aceptoCompromiso: true`
+- `fechaAceptacion`
+
+### Corrección
+
+Se corrigió el `POST /api/auth/register` desde `RegisterWorker.jsx` para mandar:
+
+- `aceptoCompromiso: true`
+- `fechaAceptacion`
+
+Además:
+
+- se mantuvo el guard con `localStorage`
+- se dejó la creación posterior de `WorkerProfile`
+
+### Estado actual
+
+- La trabajadora sí puede registrarse.
+- El perfil profesional sí se crea.
+- La trabajadora nueva sí aparece en la lista de profesionales.
+
+---
+
+## 4. DECISIONES IMPORTANTES TOMADAS
+
+Estas decisiones ya se definieron y deben respetarse en futuras sesiones.
+
+### 4.1 Flujo obligatorio de compromiso
+
+**Decisión tomada:**  
+Tanto **clientas** como **trabajadoras** deben aceptar el Compromiso Hana **antes** del formulario de registro.
+
+### Flujo correcto definido
+
+**CTA** → **Compromiso Hana** → **Aceptar** → **Registro**
+
+### 4.2 No se debe permitir acceso libre al formulario
+
+Si la usuaria intenta abrir directamente:
+
+- `/register-worker`
+- `/register-client`
+
+sin haber pasado por compromiso, el sistema debe redirigir.
+
+### 4.3 Unificación de puntos de entrada
+
+Se definió que lo ideal es que:
+
+- todos los CTA de trabajadora apunten a `/compromiso?destino=trabajadora`
+- todos los CTA de clienta apunten a `/compromiso?destino=clienta`
+
+### 4.4 El perfil profesional visible en Home depende de WorkerProfile
+
+No basta con crear solo un `User`.
+Para aparecer como profesional destacada en Home:
+
+- debe existir el `User`
+- y debe existir el `WorkerProfile` vinculado
+
+---
+
+## 5. PROBLEMAS YA RESUELTOS
+
+- [x] Backend no levantaba por mezcla de `require` e `import`
+- [x] Error `auth is not defined`
+- [x] Error `req.user` / `req.usuario`
+- [x] Error de `MONGODB_URI` undefined
+- [x] `.env` y `node_modules` subidos al repo
+- [x] Pantalla en blanco en perfil profesional
+- [x] `NaN` en Índice Hana
+- [x] Home mostrando estructura visual deficiente en “Cómo funciona”
+- [x] CTA duplicados confusos
+- [x] Links muertos en navbar
+- [x] Trabajadora registrada que no aparecía correctamente
+- [x] Registro profesional sin enviar aceptación de compromiso al backend
+
+---
+
+## 6. LO QUE TODAVÍA FALTA HACER
+
+# 6.1 PENDIENTE INMEDIATO
+
+## Navegación y flujo
+
+- [ ] Unificar **todos** los botones de entrada según intención:
+  - [ ] `Ofrecer servicios` → `/compromiso?destino=trabajadora`
+  - [ ] `Crear mi perfil gratis` → `/compromiso?destino=trabajadora`
+  - [ ] `Contratar servicios` → `/compromiso?destino=clienta`
+- [ ] Verificar que no quede ningún botón llevando directo al formulario sin pasar por compromiso.
+- [ ] Asegurar que en ambas rutas (`register-client` y `register-worker`) el formulario no se muestre ni un segundo si no aceptó previamente.
+
+## Registro de clienta
+
+- [ ] Revisar `RegisterClient.jsx`
+- [ ] Aplicar exactamente el mismo flujo obligatorio de compromiso que ya se pensó para trabajadoras
+- [ ] Verificar que también envíe `aceptoCompromiso` y `fechaAceptacion` si el backend lo requiere
+
+## Compromiso Hana
+
+- [ ] Mejorar todavía más la introducción visual del compromiso si se estima necesario
+- [ ] Verificar que desde cualquier CTA abra desde arriba y nunca a media página
+- [ ] Revisar si conviene agregar un indicador visual de progreso o una caja fija final de aceptación
+
+---
+
+# 6.2 PENDIENTE FUNCIONAL SIGUIENTE
+
+## Verificación y confianza
+
+- [ ] Subida de foto de perfil real
+- [ ] Subida de carnet por ambos lados
+- [ ] Flujo de revisión / validación manual por admin
+- [ ] Estado “verificada” visible para clienta y trabajadora
+
+## Reservas
+
+- [ ] Completar frontend de reservas
+- [ ] Solicitar reserva desde perfil profesional
+- [ ] Aceptar/rechazar reserva desde trabajadora
+- [ ] Mostrar reservas activas
+
+## Evaluaciones
+
+- [ ] Sistema completo de reseñas
+- [ ] Mostrar métricas reales en perfil
+- [ ] Reemplazar valores mock de barras por datos reales
+
+## Perfil de usuaria
+
+- [ ] Revisar `MiPerfil`
+- [ ] Revisar si clienta y trabajadora deben tener perfiles diferenciados o uno adaptable
+
+---
+
+# 6.3 PENDIENTE MÁS ADELANTE
 
 - [ ] Deploy frontend en Vercel
 - [ ] Deploy backend en Render
-- [ ] Panel de administración para verificar carnets
-- [ ] README con instrucciones
+- [ ] README profesional del repo
+- [ ] Rotación de credenciales expuestas previamente
+- [ ] Mejoras de seguridad
+- [ ] Mejoras de accesibilidad
+- [ ] Filtros reales por región/categoría
+- [ ] Sistema de match o recomendación
+- [ ] Panel de administración
 
 ---
-
-## CÓMO ARRANCAR UNA SESIÓN NUEVA
-
-1. Abrir VSCode
-2. Abrir carpeta hana
-3. Terminal 1: `cd frontend` → `npm run dev` → http://localhost:5173
-4. Terminal 2: `cd backend` → `npm run dev` → http://localhost:5000
-5. Subir este archivo PROGRESO.md al proyecto en Claude y decir:
-   "Estoy construyendo el proyecto Hana, continuamos desde donde quedamos."
-
----
-
-## CREDENCIALES IMPORTANTES (guardar en lugar seguro)
-
-- ***
-
-## COMANDOS QUE MÁS USARÁS
-
-| Qué hace                 | Comando                                                  |
-| ------------------------ | -------------------------------------------------------- |
-| Iniciar el frontend      | `npm run dev` (dentro de /frontend)                      |
-| Iniciar el backend       | `npm run dev` (dentro de /backend)                       |
-| Detener el servidor      | Ctrl + C                                                 |
-| Reiniciar nodemon        | escribir `rs` + Enter en la terminal del backend         |
-| Guardar en GitHub        | `git add .` → `git commit -m "descripción"` → `git push` |
-| Ver en qué carpeta estás | `pwd`                                                    |
-
----
-
-## TECNOLOGÍAS Y POR QUÉ
-
-| Tecnología        | Para qué sirve                                |
-| ----------------- | --------------------------------------------- |
-| React             | Construir las pantallas (frontend)            |
-| Vite              | Herramienta que hace correr React rápido      |
-| React Router      | Navegar entre páginas sin recargar            |
-| axios             | Hacer peticiones HTTP del frontend al backend |
-| Node.js + Express | El servidor backend                           |
-| MongoDB Atlas     | Base de datos en la nube (gratis)             |
-| Mongoose          | Conectar Node.js con MongoDB                  |
-| JWT               | Sistema de login seguro sin sesiones          |
-| bcryptjs          | Encriptar contraseñas antes de guardarlas     |
-| Cloudinary        | Guardar fotos e imágenes (pendiente)          |
-| Nodemailer        | Enviar emails de notificación (pendiente)     |
-| Vercel            | Deploy del frontend (gratis)                  |
-| Render            | Deploy del backend (gratis)                   |
-
----
-
-## ESTRUCTURA DE CARPETAS ACTUAL
-
-```
-hana/
-├── frontend/
-│   └── src/
-│       ├── pages/
-│       │   ├── Home.jsx ✅
-│       │   ├── Login.jsx ✅
-│       │   ├── RegisterClient.jsx ✅
-│       │   ├── RegisterWorker.jsx ✅ (pendiente protección compromiso)
-│       │   ├── WorkerProfile.jsx ✅
-│       │   ├── Impacto.jsx ✅
-│       │   └── Compromiso.jsx ✅
-│       ├── components/
-│       │   ├── Navbar.jsx ✅
-│       │   └── Footer.jsx
-│       ├── App.jsx ✅
-│       └── main.jsx ✅
-└── backend/
-    └── src/
-        ├── models/
-        │   ├── User.js ✅ (con aceptoCompromiso y fechaAceptacion)
-        │   ├── WorkerProfile.js ✅
-        │   ├── Booking.js ✅
-        │   ├── Review.js ✅
-        │   └── Alert.js ✅
-        ├── routes/
-        │   ├── auth.js ✅ (register + login + aceptoCompromiso)
-        │   ├── workers.js ✅ (4 rutas completas)
-        │   ├── bookings.js ✅ (4 rutas completas)
-        │   └── reviews.js ✅ (2 rutas completas)
-        ├── middleware/
-        │   └── auth.js ✅
-        ├── config/
-        │   └── db.js ✅
-        └── server.js ✅
-```
-
----
-
-## ARCHIVOS ESTÁTICOS
-
-- frontend/public/logoHana2.png ✅ (sin fondo, 1.38MB)
-- frontend/public/favicon.svg ✅
-- frontend/public/icons.svg ✅
-
----
-
-## MEJORAS PLANIFICADAS
-
-- [ ] Índice de confianza Hana calculado desde datos reales
-- [ ] Indicador disponible ahora (verde/rojo en perfil)
-- [ ] Certificados de capacitación en perfil
-- [ ] Verificación de identidad con Soyio API (RUT vs Registro Civil)
-- [ ] Sistema de match inteligente
-- [ ] Botón de emergencia con ubicación para trabajadoras
-- [ ] Check-in / check-out del servicio con geolocalización
-- [ ] Categoría "Transporte y traslados" ← pendiente agregar
-
----
-
-## DOCUMENTOS GENERADOS
-
-- informe_hana_parcial1_v2.docx
-- documentacion_tecnica_hana.docx
